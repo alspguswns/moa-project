@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
-from routers import auth
+from routers import auth, expense
 
 Base.metadata.create_all(bind=engine)
 
@@ -16,6 +16,7 @@ app.add_middleware(
 )
 
 app.include_router(auth.router, prefix="/auth")  # ← 이게 빠져있었어요!
+app.include_router(expense.router, prefix="/expense")
 
 @app.get("/")
 def read_root():
