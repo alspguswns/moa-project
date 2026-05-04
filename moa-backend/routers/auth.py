@@ -2,28 +2,37 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from passlib.context import CryptContext
+from jose import jwt
+from datetime import datetime, timedelta
 from database import get_db
 from models import User
 
 router = APIRouter()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+SECRET_KEY = "moa-secret-key-2026"
+ALGORITHM = "HS256"
+
 class SignupRequest(BaseModel):
     email: str
     password: str
     nickname: str
 
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+def create_token(email: str):
+    expire = datetime.utcnow() + timedelta(hours=24)
+    return jwt.encode({"sub": email, "exp": expire}, SECRET_KEY, algorithm=ALGORITHM)
+
 @router.post("/signup")
 def signup(request: SignupRequest, db: Session = Depends(get_db)):
-    # 이미 가입된 이메일인지 확인
     existing_user = db.query(User).filter(User.email == request.email).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="이미 사용중인 이메일이에요!")
 
-    # 비밀번호 암호화
     hashed_password = pwd_context.hash(request.password)
-
-    # 유저 저장
     new_user = User(
         email=request.email,
         password=hashed_password,
@@ -33,27 +42,17 @@ def signup(request: SignupRequest, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_user)
 
-    return {"message": "회원가입 성공!", "nickname": new_user.nickname}
+    token = create_token(new_user.email)
+    return {"message": "회원가입 성공!", "token": token, "nickname": new_user.nickname}
 
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from database import engine, Base
-from routers import auth
+@router.post("/login")
+def login(request: LoginRequest, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == request.email).first()
+    if not user:
+        raise HTTPException(status_code=400, detail="이메일 또는 비밀번호가 틀렸어요!")
 
-Base.metadata.create_all(bind=engine)
+    if not pwd_context.verify(request.password, user.password):
+        raise HTTPException(status_code=400, detail="이메일 또는 비밀번호가 틀렸어요!")
 
-app = FastAPI()
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:5174"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-app.include_router(auth.router, prefix="/auth")
-
-@app.get("/")
-def read_root():
-    return {"message": "MOA 백엔드 서버 작동중!"}
+    token = create_token(user.email)
+    return {"message": "로그인 성공!", "token": token, "nickname": user.nickname}
