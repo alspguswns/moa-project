@@ -1,18 +1,19 @@
 function AddSpendPage({ onBack }) {
     return (
-        <div style={{ maxWidth: "360px", margin: "0 auto", padding: "24px 20px" }}>
+        <div style={{ maxWidth: "360px", margin: "0 auto", padding: "24px 20px",fontFamily: "'GriounPolice', cursive"}}>
             <button onClick={onBack} style={{
                 background: "none", border: "none",
                 fontSize: "24px", cursor: "pointer", marginBottom: "16px"
             }}>←</button>
 
-            <h2 style={{ fontSize: "20px", marginBottom: "24px" }}>지출 입력</h2>
+            <h2 style={{ fontSize: "20px", marginBottom: "24px",fontFamily: "'GriounPolice', cursive" }}>지출 입력</h2>
 
             <div style={{ marginBottom: "16px" }}>
                 <label style={{ fontSize: "12px", color: "#888", display: "block", marginBottom: "6px" }}>금액</label>
                 <input type="number" placeholder="0" style={{
                     width: "100%", padding: "10px 12px", borderRadius: "10px",
-                    border: "1px solid #eee", fontSize: "14px", boxSizing: "border-box"
+                    border: "1px solid #eee", fontSize: "14px", boxSizing: "border-box",
+                    fontFamily: "'GriounPolice', cursive"
                 }} />
             </div>
 
@@ -20,7 +21,8 @@ function AddSpendPage({ onBack }) {
                 <label style={{ fontSize: "12px", color: "#888", display: "block", marginBottom: "6px" }}>카테고리</label>
                 <select style={{
                     width: "100%", padding: "10px 12px", borderRadius: "10px",
-                    border: "1px solid #eee", fontSize: "14px", boxSizing: "border-box"
+                    border: "1px solid #eee", fontSize: "14px", boxSizing: "border-box",
+                    fontFamily: "'GriounPolice', cursive"
                 }}>
                     <option>식비</option>
                     <option>교통</option>
@@ -40,8 +42,9 @@ function AddSpendPage({ onBack }) {
 
             <button style={{
                 width: "100%", padding: "14px", borderRadius: "12px",
-                background: "#7F77DD", color: "white", border: "none",
-                fontSize: "15px", fontWeight: "500", cursor: "pointer"
+                background: "#F4A7B9", color: "white", border: "none",
+                fontSize: "15px", fontWeight: "500", cursor: "pointer",
+                fontFamily: "'GriounPolice', cursive"
             }}>
                 저장하기
             </button>

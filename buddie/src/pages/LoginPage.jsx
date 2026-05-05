@@ -1,4 +1,4 @@
-function LoginPage({ onLogin }) {
+function LoginPage({ onLogin, onSignup }) {
     return (
         <div style={{
             minHeight: "100vh",
@@ -19,7 +19,7 @@ function LoginPage({ onLogin }) {
                 padding: "40px 32px",
                 width: "300px",
                 boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
-                border: "1px solid #eee"
+                border: "1px solid #eee",
             }}>
 
                 {/* 로고 */}
@@ -43,7 +43,8 @@ function LoginPage({ onLogin }) {
                         color: "#333",
                         boxSizing: "border-box",
                         marginBottom: "10px",
-                        outline: "none"
+                        outline: "none",
+                        fontFamily: "'GriounPolice', cursive"
                     }}
                 />
 
@@ -61,7 +62,8 @@ function LoginPage({ onLogin }) {
                         boxSizing: "border-box",
                         marginBottom: "16px",
                         color: "#333",
-                        outline: "none"
+                        outline: "none",
+                        fontFamily: "'GriounPolice', cursive"
                     }}
                 />
 
@@ -76,7 +78,8 @@ function LoginPage({ onLogin }) {
                     fontSize: "16px",
                     fontWeight: "600",
                     cursor: "pointer",
-                    marginBottom: "12px"
+                    marginBottom: "12px",
+                    fontFamily: "'GriounPolice', cursive"
                 }}>
                     로그인
                 </button>
@@ -96,7 +99,8 @@ function LoginPage({ onLogin }) {
                     border: "none",
                     fontSize: "14px",
                     fontWeight: "600",
-                    cursor: "pointer"
+                    cursor: "pointer",
+                    fontFamily: "'GriounPolice', cursive"
                 }}>
                     💬 카카오로 시작하기
                 </button>
@@ -104,7 +108,9 @@ function LoginPage({ onLogin }) {
                 {/* 회원가입 */}
                 <p style={{ textAlign: "center", fontSize: "12px", color: "#aaa", marginTop: "16px" }}>
                     계정이 없으신가요?{" "}
-                    <span style={{ color: "#F4A7B9", fontWeight: "600", cursor: "pointer" }}>
+                    <span
+                        onClick={onSignup}
+                        style={{ color: "#F4A7B9", fontWeight: "600", cursor: "pointer" }}>
             회원가입
           </span>
                 </p>
