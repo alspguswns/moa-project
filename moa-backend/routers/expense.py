@@ -46,3 +46,45 @@ def delete_expense(transaction_id: int, db: Session = Depends(get_db)):
     db.delete(transaction)
     db.commit()
     return {"message": "삭제 완료!"}
+
+@router.get("/summary/{user_id}")
+def get_summary(user_id: int, db: Session = Depends(get_db)):
+    from datetime import datetime
+    current_month = datetime.now().strftime("%Y-%m")
+
+    transactions = db.query(Transaction).filter(
+        Transaction.user_id == user_id,
+        Transaction.date.like(f"{current_month}%")
+    ).all()
+
+    total_income = sum(t.amount for t in transactions if t.type == "수입")
+    total_expense = sum(t.amount for t in transactions if t.type == "지출")
+
+    return {
+        "total_income": total_income,
+        "total_expense": total_expense,
+        "balance": total_income - total_expense
+    }
+
+@router.get("/category/{user_id}")
+def get_category_stats(user_id: int, db: Session = Depends(get_db)):
+    transactions = db.query(Transaction).filter(
+        Transaction.user_id == user_id,
+        Transaction.type == "지출"
+    ).all()
+
+    stats = {}
+    for t in transactions:
+        if t.category not in stats:
+            stats[t.category] = 0
+        stats[t.category] += t.amount
+
+    return stats
+
+@router.get("/monthly/{user_id}/{month}")
+def get_monthly(user_id: int, month: str, db: Session = Depends(get_db)):
+    transactions = db.query(Transaction).filter(
+        Transaction.user_id == user_id,
+        Transaction.date.like(f"{month}%")
+    ).all()
+    return transactions
