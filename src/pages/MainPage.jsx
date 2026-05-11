@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
+import BottomNav from "../components/BottomNav"
 
-function MainPage({ onAddSpend, onHistory, onCalendar, userId: propUserId }) {
+function MainPage({ onAddSpend, onHome, onHistory, onCalendar, onAnalysis, onWishlist, onLogout, userId: propUserId, current }) {
     const nickname = localStorage.getItem("nickname") || "사용자"
     const [transactions, setTransactions] = useState([])
     const [totalIncome, setTotalIncome] = useState(0)
@@ -10,8 +11,6 @@ function MainPage({ onAddSpend, onHistory, onCalendar, userId: propUserId }) {
 
     useEffect(() => {
         const userId = propUserId || localStorage.getItem("user_id")
-        console.log("userId:", userId)
-
         if (!userId) {
             setAiLoading(false)
             return
@@ -57,9 +56,15 @@ function MainPage({ onAddSpend, onHistory, onCalendar, userId: propUserId }) {
             fontFamily: "'GriounPolice', cursive"
         }}>
             <div style={{ maxWidth: "360px", margin: "0 auto" }}>
-                <h2 style={{ fontSize: "20px", marginBottom: "4px", fontWeight: "500", color: "#888", fontFamily: "'GriounPolice', cursive" }}>
-                    안녕하세요 {nickname}님 👋
-                </h2>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+                    <h2 style={{ fontSize: "20px", margin: 0, fontWeight: "500", color: "#888", fontFamily: "'GriounPolice', cursive" }}>
+                        안녕하세요 {nickname}님 👋
+                    </h2>
+                    <button onClick={onLogout} style={{
+                        background: "none", border: "none", fontSize: "12px",
+                        color: "#ccc", cursor: "pointer", fontFamily: "'GriounPolice', cursive"
+                    }}>로그아웃</button>
+                </div>
                 <p style={{ color: "#888", fontSize: "14px", marginBottom: "24px" }}>
                     이번달 지출을 확인해요!
                 </p>
@@ -96,7 +101,7 @@ function MainPage({ onAddSpend, onHistory, onCalendar, userId: propUserId }) {
                 </div>
 
                 {/* 최근 내역 */}
-                <div style={{ marginBottom: "80px" }}>
+                <div style={{ marginBottom: "100px" }}>
                     <p style={{ fontSize: "14px", fontWeight: "500", marginBottom: "12px" }}>최근 내역</p>
                     {recent.length === 0 ? (
                         <p style={{ textAlign: "center", color: "#aaa", marginTop: "20px" }}>내역이 없어요!</p>
@@ -128,31 +133,14 @@ function MainPage({ onAddSpend, onHistory, onCalendar, userId: propUserId }) {
                     width: "100%", padding: "15px", borderRadius: "14px",
                     background: "#F4A7B9", color: "white", border: "none",
                     fontSize: "15px", fontWeight: "600", cursor: "pointer",
-                    fontFamily: "'GriounPolice', cursive"
+                    fontFamily: "'GriounPolice', cursive",
+                    marginBottom: "80px"
                 }}>
                     + 지출 추가하기
                 </button>
             </div>
 
-            {/* 하단 네비게이션 */}
-            <div style={{
-                position: "fixed", bottom: 0, left: "50%",
-                transform: "translateX(-50%)",
-                width: "360px", background: "white",
-                borderTop: "1px solid #eee",
-                display: "flex", justifyContent: "space-around",
-                padding: "12px 0"
-            }}>
-                <button style={{ background: "none", border: "none", cursor: "pointer", fontSize: "12px", color: "#F4A7B9" }}>
-                    🏠 홈
-                </button>
-                <button onClick={onHistory} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "12px", color: "#aaa" }}>
-                    📋 내역
-                </button>
-                <button onClick={onCalendar} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "12px", color: "#aaa" }}>
-                    📅 캘린더
-                </button>
-            </div>
+            <BottomNav current={current} onHome={onHome} onHistory={onHistory} onCalendar={onCalendar} onAnalysis={onAnalysis} onWishlist={onWishlist} />
         </div>
     )
 }
