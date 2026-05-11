@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Text
 from database import Base
 
 class User(Base):
@@ -31,7 +31,17 @@ class Wishlist(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer)
-    name = Column(String)        # 물건 이름
-    price = Column(Integer)      # 목표 금액
-    priority = Column(Integer)   # 우선순위 (1이 최고)
-    memo = Column(String)        # 메모
+    name = Column(String)
+    price = Column(Integer)
+    priority = Column(Integer)
+    memo = Column(String)
+
+class AICharacter(Base):
+    __tablename__ = "ai_characters"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, unique=True)
+    name = Column(String, default="MOA")
+    style = Column(String, default="친근하고 귀엽게")
+    profile_url = Column(String, default="")
+    system_prompt = Column(Text, default="")
