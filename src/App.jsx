@@ -7,6 +7,8 @@ import HistoryPage from "./pages/HistoryPage"
 import CalendarPage from "./pages/CalendarPage"
 import AnalysisPage from "./pages/AnalysisPage"
 import WishlistPage from "./pages/WishlistPage"
+import CharacterPage from "./pages/CharacterPage"
+import ChatPage from "./pages/ChatPage"
 
 function App() {
     const [page, setPage] = useState("login")
@@ -23,6 +25,7 @@ function App() {
         onCalendar: () => setPage("calendar"),
         onAnalysis: () => setPage("analysis"),
         onWishlist: () => setPage("wishlist"),
+        onChat: () => setPage("chat"),
     }
 
     const handleLogout = () => {
@@ -62,6 +65,12 @@ function App() {
             )}
             {page === "wishlist" && (
                 <WishlistPage {...nav} onBack={() => setPage("main")} current="wishlist" />
+            )}
+            {page === "chat" && (
+                <ChatPage {...nav} onBack={() => setPage("main")} onCharacter={() => setPage("character")} current="chat" />
+            )}
+            {page === "character" && (
+                <CharacterPage {...nav} onBack={() => setPage("chat")} current="chat" />
             )}
         </>
     )

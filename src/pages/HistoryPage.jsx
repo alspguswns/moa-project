@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import BottomNav from "../components/BottomNav"
 
-function HistoryPage({ onBack, onHome, onHistory, onCalendar, onAnalysis, onWishlist, current }) {
+function HistoryPage({ onBack, onHome, onHistory, onCalendar, onAnalysis, onWishlist, onChat, current }) {
     const [transactions, setTransactions] = useState([])
     const [filter, setFilter] = useState("전체")
 
@@ -94,7 +94,7 @@ function HistoryPage({ onBack, onHome, onHistory, onCalendar, onAnalysis, onWish
                 </div>
             </div>
 
-            <BottomNav current={current} onHome={onHome} onHistory={onHistory} onCalendar={onCalendar} onAnalysis={onAnalysis} onWishlist={onWishlist} />
+            <BottomNav current={current} onHome={onHome} onHistory={onHistory} onCalendar={onCalendar} onAnalysis={onAnalysis} onWishlist={onWishlist} onChat={onChat} />
         </div>
     )
 }

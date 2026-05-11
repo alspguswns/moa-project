@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import BottomNav from "../components/BottomNav"
 
-function AnalysisPage({ onHome, onHistory, onCalendar, onAnalysis, onWishlist, current }) {
+function AnalysisPage({ onHome, onHistory, onCalendar, onAnalysis, onWishlist, onChat, current }) {
     const [data, setData] = useState(null)
     const [loading, setLoading] = useState(true)
 
@@ -113,7 +113,7 @@ function AnalysisPage({ onHome, onHistory, onCalendar, onAnalysis, onWishlist, c
                 )}
             </div>
 
-            <BottomNav current={current} onHome={onHome} onHistory={onHistory} onCalendar={onCalendar} onAnalysis={onAnalysis} onWishlist={onWishlist} />
+            <BottomNav current={current} onHome={onHome} onHistory={onHistory} onCalendar={onCalendar} onAnalysis={onAnalysis} onWishlist={onWishlist} onChat={onChat} />
         </div>
     )
 }

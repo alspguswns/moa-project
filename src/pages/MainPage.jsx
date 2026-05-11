@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import BottomNav from "../components/BottomNav"
 
-function MainPage({ onAddSpend, onHome, onHistory, onCalendar, onAnalysis, onWishlist, onLogout, userId: propUserId, current }) {
+function MainPage({ onAddSpend, onHome, onHistory, onCalendar, onAnalysis, onWishlist, onChat, onLogout, userId: propUserId, current }) {
     const nickname = localStorage.getItem("nickname") || "사용자"
     const [transactions, setTransactions] = useState([])
     const [totalIncome, setTotalIncome] = useState(0)
@@ -140,7 +140,7 @@ function MainPage({ onAddSpend, onHome, onHistory, onCalendar, onAnalysis, onWis
                 </button>
             </div>
 
-            <BottomNav current={current} onHome={onHome} onHistory={onHistory} onCalendar={onCalendar} onAnalysis={onAnalysis} onWishlist={onWishlist} />
+            <BottomNav current={current} onHome={onHome} onHistory={onHistory} onCalendar={onCalendar} onAnalysis={onAnalysis} onWishlist={onWishlist} onChat={onChat} />
         </div>
     )
 }

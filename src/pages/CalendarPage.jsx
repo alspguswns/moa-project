@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import BottomNav from "../components/BottomNav"
 
-function CalendarPage({ onHome, onHistory, onCalendar, onAnalysis, onWishlist, current }) {
+function CalendarPage({ onHome, onHistory, onCalendar, onAnalysis, onWishlist, onChat, current }) {
     const today = new Date()
     const [year, setYear] = useState(today.getFullYear())
     const [month, setMonth] = useState(today.getMonth())
@@ -113,7 +113,7 @@ function CalendarPage({ onHome, onHistory, onCalendar, onAnalysis, onWishlist, c
                 </div>
             </div>
 
-            <BottomNav current={current} onHome={onHome} onHistory={onHistory} onCalendar={onCalendar} onAnalysis={onAnalysis} onWishlist={onWishlist} />
+            <BottomNav current={current} onHome={onHome} onHistory={onHistory} onCalendar={onCalendar} onAnalysis={onAnalysis} onWishlist={onWishlist} onChat={onChat} />
         </div>
     )
 }

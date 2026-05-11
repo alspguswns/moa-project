@@ -1,7 +1,7 @@
 import { useState } from "react"
 import BottomNav from "../components/BottomNav"
 
-function AddSpendPage({ onBack, onHome, onHistory, onCalendar, onAnalysis, onWishlist, current }) {
+function AddSpendPage({ onBack, onHome, onHistory, onCalendar, onAnalysis, onWishlist, onChat, current }) {
     const [amount, setAmount] = useState("")
     const [category, setCategory] = useState("식비")
     const [memo, setMemo] = useState("")
@@ -50,7 +50,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onCalendar, onAnalysis, onWis
             backgroundColor: "#f5f5f5",
             padding: "24px 20px",
             boxSizing: "border-box",
-            fontFamily: "'GriounPolice', cursive"
+            fontFamily: "'GriounPolice', cursive", color: "#333", color: "#333"
         }}>
             <div style={{ maxWidth: "360px", margin: "0 auto", paddingBottom: "80px" }}>
                 <h2 style={{ fontSize: "20px", marginBottom: "24px" }}>✏️ 지출 입력</h2>
@@ -63,7 +63,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onCalendar, onAnalysis, onWis
                             background: type === t ? "#F4A7B9" : "#f0f0f0",
                             color: type === t ? "white" : "#888",
                             fontSize: "13px", cursor: "pointer",
-                            fontFamily: "'GriounPolice', cursive"
+                            fontFamily: "'GriounPolice', cursive", color: "#333", color: "#333"
                         }}>
                             {t}
                         </button>
@@ -78,7 +78,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onCalendar, onAnalysis, onWis
                            style={{
                                width: "100%", padding: "10px 12px", borderRadius: "10px",
                                border: "1px solid #eee", fontSize: "14px", boxSizing: "border-box",
-                               fontFamily: "'GriounPolice', cursive", outline: "none",
+                               fontFamily: "'GriounPolice', cursive", color: "#333", color: "#333", outline: "none",
                                background: "white"
                            }} />
                 </div>
@@ -90,7 +90,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onCalendar, onAnalysis, onWis
                             style={{
                                 width: "100%", padding: "10px 12px", borderRadius: "10px",
                                 border: "1px solid #eee", fontSize: "14px", boxSizing: "border-box",
-                                fontFamily: "'GriounPolice', cursive", outline: "none",
+                                fontFamily: "'GriounPolice', cursive", color: "#333", color: "#333", outline: "none",
                                 background: "white"
                             }}>
                         <option>식비</option>
@@ -109,7 +109,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onCalendar, onAnalysis, onWis
                            style={{
                                width: "100%", padding: "10px 12px", borderRadius: "10px",
                                border: "1px solid #eee", fontSize: "14px", boxSizing: "border-box",
-                               fontFamily: "'GriounPolice', cursive", outline: "none",
+                               fontFamily: "'GriounPolice', cursive", color: "#333", color: "#333", outline: "none",
                                background: "white"
                            }} />
                 </div>
@@ -126,13 +126,13 @@ function AddSpendPage({ onBack, onHome, onHistory, onCalendar, onAnalysis, onWis
                     width: "100%", padding: "14px", borderRadius: "12px",
                     background: "#F4A7B9", color: "white", border: "none",
                     fontSize: "15px", fontWeight: "500", cursor: "pointer",
-                    fontFamily: "'GriounPolice', cursive"
+                    fontFamily: "'GriounPolice', cursive", color: "#333", color: "#333"
                 }}>
                     저장하기
                 </button>
             </div>
 
-            <BottomNav current={current} onHome={onHome} onHistory={onHistory} onCalendar={onCalendar} onAnalysis={onAnalysis} onWishlist={onWishlist} />
+            <BottomNav current={current} onHome={onHome} onHistory={onHistory} onCalendar={onCalendar} onAnalysis={onAnalysis} onWishlist={onWishlist} onChat={onChat} />
         </div>
     )
 }

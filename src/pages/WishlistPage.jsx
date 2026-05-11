@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import BottomNav from "../components/BottomNav"
 
-function WishlistPage({ onHome, onHistory, onCalendar, onAnalysis, onWishlist, current }) {
+function WishlistPage({ onHome, onHistory, onCalendar, onAnalysis, onWishlist, onChat, current }) {
     const userId = localStorage.getItem("user_id")
     const [items, setItems] = useState([])
     const [showForm, setShowForm] = useState(false)
@@ -141,7 +141,7 @@ function WishlistPage({ onHome, onHistory, onCalendar, onAnalysis, onWishlist, c
                 )}
             </div>
 
-            <BottomNav current={current} onHome={onHome} onHistory={onHistory} onCalendar={onCalendar} onAnalysis={onAnalysis} onWishlist={onWishlist} />
+            <BottomNav current={current} onHome={onHome} onHistory={onHistory} onCalendar={onCalendar} onAnalysis={onAnalysis} onWishlist={onWishlist} onChat={onChat} />
         </div>
     )
 }
