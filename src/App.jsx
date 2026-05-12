@@ -4,7 +4,6 @@ import MainPage from "./pages/MainPage"
 import AddSpendPage from "./pages/AddSpendPage"
 import SignupPage from "./pages/SignupPage"
 import HistoryPage from "./pages/HistoryPage"
-import CalendarPage from "./pages/CalendarPage"
 import AnalysisPage from "./pages/AnalysisPage"
 import WishlistPage from "./pages/WishlistPage"
 import CharacterPage from "./pages/CharacterPage"
@@ -12,6 +11,7 @@ import ChatPage from "./pages/ChatPage"
 
 function App() {
     const [page, setPage] = useState("login")
+    const [prevPage, setPrevPage] = useState("main")
     const [userId, setUserId] = useState(null)
 
     const handleLogin = () => {
@@ -19,19 +19,23 @@ function App() {
         setPage("main")
     }
 
-    const nav = {
-        onHome: () => setPage("main"),
-        onHistory: () => setPage("history"),
-        onCalendar: () => setPage("calendar"),
-        onAnalysis: () => setPage("analysis"),
-        onWishlist: () => setPage("wishlist"),
-        onChat: () => setPage("chat"),
-    }
-
     const handleLogout = () => {
         localStorage.clear()
         setUserId(null)
         setPage("login")
+    }
+
+    const goTo = (p) => {
+        setPrevPage(page)
+        setPage(p)
+    }
+
+    const nav = {
+        onHome: () => goTo("main"),
+        onHistory: () => goTo("history"),
+        onAnalysis: () => goTo("analysis"),
+        onWishlist: () => goTo("wishlist"),
+        onChat: () => goTo("chat"),
     }
 
     return (
@@ -49,25 +53,22 @@ function App() {
                 />
             )}
             {page === "main" && (
-                <MainPage {...nav} onAddSpend={() => setPage("addSpend")} userId={userId} current="main" onLogout={handleLogout} />
+                <MainPage {...nav} onAddSpend={() => goTo("addSpend")} userId={userId} current="main" onLogout={handleLogout} />
             )}
             {page === "addSpend" && (
-                <AddSpendPage {...nav} onBack={() => setPage("main")} current="main" />
+                <AddSpendPage {...nav} onBack={() => setPage(prevPage)} current="main" />
             )}
             {page === "history" && (
-                <HistoryPage {...nav} onBack={() => setPage("main")} current="history" />
-            )}
-            {page === "calendar" && (
-                <CalendarPage {...nav} onBack={() => setPage("main")} current="calendar" />
+                <HistoryPage {...nav} onAddSpend={() => goTo("addSpend")} current="history" />
             )}
             {page === "analysis" && (
-                <AnalysisPage {...nav} onBack={() => setPage("main")} current="analysis" />
+                <AnalysisPage {...nav} current="analysis" />
             )}
             {page === "wishlist" && (
-                <WishlistPage {...nav} onBack={() => setPage("main")} current="wishlist" />
+                <WishlistPage {...nav} current="wishlist" />
             )}
             {page === "chat" && (
-                <ChatPage {...nav} onBack={() => setPage("main")} onCharacter={() => setPage("character")} current="chat" />
+                <ChatPage {...nav} onCharacter={() => goTo("character")} current="chat" />
             )}
             {page === "character" && (
                 <CharacterPage {...nav} onBack={() => setPage("chat")} current="chat" />

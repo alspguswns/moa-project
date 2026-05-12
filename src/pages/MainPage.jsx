@@ -134,13 +134,13 @@ function MainPage({ onAddSpend, onHome, onHistory, onCalendar, onAnalysis, onWis
                     background: "#F4A7B9", color: "white", border: "none",
                     fontSize: "15px", fontWeight: "600", cursor: "pointer",
                     fontFamily: "'GriounPolice', cursive",
-                    marginBottom: "80px"
+                    marginBottom: "100px"
                 }}>
                     + 지출 추가하기
                 </button>
             </div>
 
-            <BottomNav current={current} onHome={onHome} onHistory={onHistory} onCalendar={onCalendar} onAnalysis={onAnalysis} onWishlist={onWishlist} onChat={onChat} />
+            <BottomNav current={current} onHome={onHome} onHistory={onHistory} onAnalysis={onAnalysis} onWishlist={onWishlist} onChat={onChat} />
         </div>
     )
 }

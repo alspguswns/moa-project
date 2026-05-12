@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react"
 import BottomNav from "../components/BottomNav"
 
-function CharacterPage({ onBack, onHome, onHistory, onCalendar, onAnalysis, onWishlist, onChat, current }) {
+function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onChat, current }) {
     const userId = localStorage.getItem("user_id")
     const [name, setName] = useState("MOA")
     const [style, setStyle] = useState("친근하고 귀엽게")
     const [profileUrl, setProfileUrl] = useState("")
     const [systemPrompt, setSystemPrompt] = useState("")
     const [saved, setSaved] = useState(false)
+    const [isRegular, setIsRegular] = useState(false)
 
     useEffect(() => {
         fetch(`http://127.0.0.1:8000/character/${userId}`)

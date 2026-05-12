@@ -43,8 +43,8 @@ function WishlistPage({ onHome, onHistory, onCalendar, onAnalysis, onWishlist, o
     }
 
     const handleDelete = async (id) => {
-        await fetch(`http://127.0.0.1:8000/expense/${id}`, { method: "DELETE" })
-        setTransactions(prev => prev.filter(t => t.id !== id))
+        await fetch(`http://127.0.0.1:8000/wishlist/${id}`, { method: "DELETE" })
+        setItems(prev => prev.filter(item => item.id !== id))
     }
 
     const priorityLabel = (p) => {

@@ -39,6 +39,7 @@ function SignupPage({ onSignup, onBack }) {
 
             localStorage.setItem("token", data.token)
             localStorage.setItem("nickname", data.nickname)
+            localStorage.setItem("user_id", data.user_id)
             onSignup(data.nickname)
 
         } catch (e) {

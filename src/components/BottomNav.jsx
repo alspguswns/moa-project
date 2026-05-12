@@ -1,8 +1,7 @@
 function BottomNav({ current, onHome, onHistory, onCalendar, onAnalysis, onWishlist, onChat }) {
     const items = [
         { key: "main", label: "🏠 홈", onClick: onHome },
-        { key: "history", label: "📋 내역", onClick: onHistory },
-        { key: "calendar", label: "📅 캘린더", onClick: onCalendar },
+        { key: "history", label: "📋 내역", onClick: onHistory }, 
         { key: "analysis", label: "📊 분석", onClick: onAnalysis },
         { key: "wishlist", label: "🛍️ 위시", onClick: onWishlist },
         { key: "chat", label: "💬 AI", onClick: onChat },
