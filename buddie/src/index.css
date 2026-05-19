@@ -16,6 +16,7 @@ html, body {
   linear-gradient(90deg, #e0e0e0 1px, transparent 1px);
   background-size: 28px 28px;
   background-color: #f5f5f5;
+  font-family: 'GriounPolice', cursive;
 }
 
 #root {
