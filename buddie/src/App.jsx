@@ -8,6 +8,7 @@ import AnalysisPage from "./pages/AnalysisPage"
 import WishlistPage from "./pages/WishlistPage"
 import CharacterPage from "./pages/CharacterPage"
 import ChatPage from "./pages/ChatPage"
+import ProfilePage from "./pages/ProfilePage"
 
 function App() {
     const [page, setPage] = useState("login")
@@ -36,6 +37,7 @@ function App() {
         onAnalysis: () => goTo("analysis"),
         onWishlist: () => goTo("wishlist"),
         onChat: () => goTo("chat"),
+        onProfile: () => goTo("profile"),  // ← 추가
     }
 
     return (
@@ -53,7 +55,7 @@ function App() {
                 />
             )}
             {page === "main" && (
-                <MainPage {...nav} onAddSpend={() => goTo("addSpend")} userId={userId} current="main" onLogout={handleLogout} />
+                <MainPage {...nav} onAddSpend={() => goTo("addSpend")} userId={userId} current="main" onLogout={handleLogout} onProfile={() => goTo("profile")} />
             )}
             {page === "addSpend" && (
                 <AddSpendPage {...nav} onBack={() => setPage(prevPage)} current="main" />
@@ -72,6 +74,9 @@ function App() {
             )}
             {page === "character" && (
                 <CharacterPage {...nav} onBack={() => setPage("chat")} current="chat" />
+            )}
+            {page === "profile" && (
+                <ProfilePage {...nav} onBack={() => setPage(prevPage)} onLogout={handleLogout} current="profile" />
             )}
         </>
     )

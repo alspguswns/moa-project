@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 
-function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpend, onLogout, userId: propUserId, current }) {
+function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpend, onLogout, onProfile, userId: propUserId, current }) {
     const nickname = localStorage.getItem("nickname") || "사용자"
     const [transactions, setTransactions] = useState([])
     const [totalIncome, setTotalIncome] = useState(0)
@@ -243,7 +243,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                 }}>
                     <span style={{ fontSize: "20px", cursor: "pointer" }}>🔔</span>
 
-                    <div style={{
+                    <div onClick={onProfile} style={{
                         display: "flex",
                         alignItems: "center",
                         gap: "8px",
@@ -252,6 +252,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                         padding: "6px 12px",
                         cursor: "pointer"
                     }}>
+                        
                         <div style={{
                             width: "28px",
                             height: "28px",
