@@ -9,6 +9,7 @@ import WishlistPage from "./pages/WishlistPage"
 import CharacterPage from "./pages/CharacterPage"
 import ChatPage from "./pages/ChatPage"
 import ProfilePage from "./pages/ProfilePage"
+import GamePage from "./pages/GamePage"
 
 function App() {
     const [page, setPage] = useState("login")
@@ -38,6 +39,7 @@ function App() {
         onWishlist: () => goTo("wishlist"),
         onChat: () => goTo("chat"),
         onProfile: () => goTo("profile"),  // ← 추가
+        onGame: () => goTo("game"),
     }
 
     return (
@@ -77,6 +79,9 @@ function App() {
             )}
             {page === "profile" && (
                 <ProfilePage {...nav} onBack={() => setPage(prevPage)} onLogout={handleLogout} current="profile" />
+            )}
+            {page === "game" && (
+                <GamePage {...nav} current="game" />
             )}
         </>
     )

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
-from routers import auth, expense, ai, wishlist, character
+from routers import auth, expense, ai, wishlist, character, game
 
 Base.metadata.create_all(bind=engine)
 
@@ -20,6 +20,7 @@ app.include_router(expense.router, prefix="/expense")
 app.include_router(ai.router, prefix="/ai")
 app.include_router(wishlist.router, prefix="/wishlist")
 app.include_router(character.router, prefix="/character")
+app.include_router(game.router, prefix="/game")
 
 @app.get("/")
 def read_root():

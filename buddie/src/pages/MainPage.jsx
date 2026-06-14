@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
 
-function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpend, onLogout, onProfile, userId: propUserId, current }) {
-    const nickname = localStorage.getItem("nickname") || "사용자"
+function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpend, onLogout, onProfile, onGame, userId: propUserId, current }) {    const nickname = localStorage.getItem("nickname") || "사용자"
     const [transactions, setTransactions] = useState([])
     const [totalIncome, setTotalIncome] = useState(0)
     const [totalExpense, setTotalExpense] = useState(0)
@@ -97,6 +96,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
         { key: "analysis", icon: "📊", onClick: onAnalysis },
         { key: "wishlist", icon: "🛍️", onClick: onWishlist },
         { key: "chat", icon: "💬", onClick: onChat },
+        { key: "game", icon: "🎮", onClick: onGame },
         { key: "logout", icon: "🚪", onClick: onLogout },
     ]
 

@@ -156,6 +156,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
         { key: "analysis", icon: "📊", onClick: onAnalysis },
         { key: "wishlist", icon: "🛍️", onClick: onWishlist },
         { key: "chat", icon: "💬", onClick: onChat },
+        { key: "game", icon: "🎮", onClick: onGame },
         { key: "logout", icon: "🚪", onClick: () => {
                 setModalConfig({
                     isOpen: true,
