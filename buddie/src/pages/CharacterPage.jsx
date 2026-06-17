@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react"
 import { API } from "../config.js"
+import MobileBottomNav from "../components/MobileBottomNav"
 
-function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout, onEditProfile, current }) {
+function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout, onEditProfile, current, isMobile }) {
     const userId = localStorage.getItem("user_id")
     const nickname = localStorage.getItem("nickname") || "사용자"
     const [name, setName] = useState("MOA")
@@ -136,13 +137,13 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
     return (
         <div style={{
             display: "flex",
-            height: "100vh",
+            height: isMobile ? "auto" : "100vh", minHeight: "100vh",
             width: "100vw",
             fontFamily: "'GriounPolice', cursive",
             backgroundImage: `linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px)`,
             backgroundSize: "28px 28px",
             backgroundColor: "#f5f5f5",
-            overflow: "hidden",
+            overflow: isMobile ? "auto" : "hidden",
             boxSizing: "border-box"
         }}>
 
@@ -366,7 +367,8 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                 </div>
             </div>
 
-            {/* 좌측 LNB 사이드바 */}
+            {/* 좌측 LNB 사이드바 - PC only */}
+            {!isMobile && (
             <div style={{
                 position: "fixed",
                 top: "64px",
@@ -405,18 +407,20 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                     </div>
                 ))}
             </div>
+            )}
 
             {/* 메인 작업 영역 */}
             <div style={{
-                marginLeft: "72px",
+                marginLeft: isMobile ? 0 : "72px",
                 marginTop: "64px",
-                width: "calc(100vw - 72px)",
-                height: "calc(100vh - 64px)",
-                padding: "24px 32px",
+                width: isMobile ? "100%" : "calc(100vw - 72px)",
+                height: isMobile ? "auto" : "calc(100vh - 64px)",
+                padding: isMobile ? "16px" : "24px 32px",
+                paddingBottom: isMobile ? "80px" : "24px",
                 boxSizing: "border-box",
                 display: "flex",
                 flexDirection: "column",
-                overflow: "hidden"
+                overflow: isMobile ? "visible" : "hidden"
             }}>
 
                 {/* 헤더 */}
@@ -633,6 +637,7 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
 
                 </div>
             </div>
+            {isMobile && <MobileBottomNav navItems={navItems} current={current} />}
         </div>
     )
 }

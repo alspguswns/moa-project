@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { API } from "../config.js"
+import MobileBottomNav from "../components/MobileBottomNav"
 
 const CATEGORY_EMOJI = {
     "식비": "🍚", "카페": "☕", "교통": "🚌", "쇼핑": "🛍️",
@@ -22,7 +23,7 @@ const INCOME_CATEGORIES = [
     { label: "기타", emoji: "📦" },
 ]
 
-function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpend, onLogout, current }) {
+function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpend, onLogout, current, isMobile }) {
     const today = new Date()
     const [year, setYear] = useState(today.getFullYear())
     const [month, setMonth] = useState(today.getMonth())
@@ -219,13 +220,14 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
     return (
         <div style={{
             display: "flex",
-            height: "100vh",
+            height: isMobile ? "auto" : "100vh",
+            minHeight: "100vh",
             width: "100vw",
             fontFamily: "'GriounPolice', cursive",
             backgroundImage: `linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px)`,
             backgroundSize: "28px 28px",
             backgroundColor: "#f5f5f5",
-            overflow: "hidden",
+            overflow: isMobile ? "auto" : "hidden",
             boxSizing: "border-box"
         }}>
 
@@ -338,7 +340,8 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
                 </div>
             </div>
 
-            {/* Side Bar */}
+            {/* Side Bar - PC only */}
+            {!isMobile && (
             <div style={{ position: "fixed", top: "64px", left: 0, width: "72px", height: "calc(100vh - 64px)", background: "white", borderRight: "1px solid #eee", display: "flex", flexDirection: "column", alignItems: "center", padding: "24px 0", gap: "12px", zIndex: 100 }}>
                 {navItems.map(item => (
                     <div key={item.key} onClick={item.onClick} style={{ width: "48px", height: "48px", borderRadius: "14px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "22px", cursor: "pointer", background: current === item.key ? "#fff0f3" : "transparent", border: current === item.key ? "1.5px solid #F4A7B9" : "1.5px solid transparent" }}>
@@ -346,18 +349,20 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
                     </div>
                 ))}
             </div>
+            )}
 
             {/* Main Area Container */}
             <div style={{
-                marginLeft: "72px",
+                marginLeft: isMobile ? 0 : "72px",
                 marginTop: "64px",
-                width: "calc(100vw - 72px)",
-                height: "calc(100vh - 64px)",
-                padding: "24px 32px",
+                width: isMobile ? "100%" : "calc(100vw - 72px)",
+                height: isMobile ? "auto" : "calc(100vh - 64px)",
+                padding: isMobile ? "16px" : "24px 32px",
+                paddingBottom: isMobile ? "80px" : "24px",
                 boxSizing: "border-box",
                 display: "flex",
                 flexDirection: "column",
-                overflow: "hidden"
+                overflow: isMobile ? "visible" : "hidden"
             }}>
                 {/* Month Picker Controller */}
                 <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px", flexShrink: 0 }}>
@@ -369,10 +374,10 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
                 {/* 2-Column Grid filling the remaining heights exactly */}
                 <div style={{
                     display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
-                    gap: "24px",
-                    flex: 1,
-                    minHeight: 0,
+                    gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+                    gap: "16px",
+                    flex: isMobile ? "0 0 auto" : 1,
+                    minHeight: isMobile ? undefined : 0,
                     width: "100%"
                 }}>
 
@@ -676,6 +681,7 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
                     </div>
                 </div>
             )}
+            {isMobile && <MobileBottomNav navItems={navItems} current={current} />}
         </div>
     )
 }

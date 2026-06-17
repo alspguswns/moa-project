@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useIsMobile } from "./hooks/useIsMobile"
 import LoginPage from "./pages/LoginPage"
 import MainPage from "./pages/MainPage"
 import AddSpendPage from "./pages/AddSpendPage"
@@ -15,6 +16,7 @@ function App() {
     const [page, setPage] = useState("login")
     const [prevPage, setPrevPage] = useState("main")
     const [userId, setUserId] = useState(null)
+    const isMobile = useIsMobile()
 
     const handleLogin = () => {
         setUserId(localStorage.getItem("user_id"))
@@ -41,6 +43,7 @@ function App() {
         onProfile: () => goTo("profile"),
         onGame: () => goTo("game"),
         onLogout: handleLogout,
+        isMobile,
     }
 
     return (

@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react"
 import { API } from "../config.js"
+import MobileBottomNav from "../components/MobileBottomNav"
 
-function ProfilePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onProfile, onBack, onLogout, current }) {
+function ProfilePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onProfile, onBack, onLogout, current, isMobile }) {
     const [nickname, setNickname] = useState(localStorage.getItem("nickname") || "")
     const [bio, setBio] = useState(localStorage.getItem("bio") || "")
     const [profileImg, setProfileImg] = useState(localStorage.getItem("profileImg") || "")
@@ -54,11 +55,11 @@ function ProfilePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onProf
 
     return (
         <div style={{
-            display: "flex", height: "100vh", width: "100vw",
+            display: "flex", height: isMobile ? "auto" : "100vh", minHeight: "100vh", width: "100vw",
             fontFamily: "'Pretendard', -apple-system, 'GriounPolice', sans-serif",
             backgroundImage: `linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px)`,
             backgroundSize: "28px 28px", backgroundColor: "#f5f5f5",
-            overflow: "hidden", boxSizing: "border-box"
+            overflow: isMobile ? "auto" : "hidden", boxSizing: "border-box"
         }}>
 
             {/* 삭제 확인 모달 */}
@@ -85,7 +86,8 @@ function ProfilePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onProf
                 <button onClick={onBack} style={{ background: "none", border: "none", fontSize: "14px", color: "#aaa", cursor: "pointer" }}>← 돌아가기</button>
             </div>
 
-            {/* 사이드바 */}
+            {/* 사이드바 - PC only */}
+            {!isMobile && (
             <div style={{ position: "fixed", top: "64px", left: 0, width: "72px", height: "calc(100vh - 64px)", background: "white", borderRight: "1px solid #eee", display: "flex", flexDirection: "column", alignItems: "center", padding: "24px 0", gap: "12px", zIndex: 100 }}>
                 {navItems.map(item => (
                     <div key={item.key} onClick={item.onClick} style={{ width: "48px", height: "48px", borderRadius: "14px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "22px", cursor: "pointer", background: current === item.key ? "#fff0f3" : "transparent", border: current === item.key ? "1.5px solid #F4A7B9" : "1.5px solid transparent" }}>
@@ -93,9 +95,10 @@ function ProfilePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onProf
                     </div>
                 ))}
             </div>
+            )}
 
             {/* 메인 콘텐츠 */}
-            <div style={{ marginLeft: "72px", marginTop: "64px", width: "calc(100vw - 72px)", height: "calc(100vh - 64px)", padding: "32px", boxSizing: "border-box", overflowY: "auto" }}>
+            <div style={{ marginLeft: isMobile ? 0 : "72px", marginTop: "64px", width: isMobile ? "100%" : "calc(100vw - 72px)", height: isMobile ? "auto" : "calc(100vh - 64px)", padding: isMobile ? "16px" : "32px", paddingBottom: isMobile ? "80px" : "32px", boxSizing: "border-box", overflowY: isMobile ? "visible" : "auto" }}>
                 <div style={{ maxWidth: "720px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "20px" }}>
 
                     <h2 style={{ margin: 0, fontSize: "20px", fontWeight: "700", color: "#111" }}>👤 프로필 설정</h2>
@@ -171,6 +174,7 @@ function ProfilePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onProf
 
                 </div>
             </div>
+            {isMobile && <MobileBottomNav navItems={navItems} current={current} />}
         </div>
     )
 }

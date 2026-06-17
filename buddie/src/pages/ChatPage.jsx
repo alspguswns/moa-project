@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { API } from "../config.js"
+import MobileBottomNav from "../components/MobileBottomNav"
 
 // 상위 은행 챗봇 스타일의 추천 질문 프리셋 목록
 const QUICK_PROMPTS = [
@@ -8,7 +9,7 @@ const QUICK_PROMPTS = [
     { text: "식비를 효과적으로 아끼려면? 💡" }
 ]
 
-function ChatPage({ onBack, onCharacter, onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout, current }) {
+function ChatPage({ onBack, onCharacter, onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout, current, isMobile }) {
     const userId = localStorage.getItem("user_id")
     const nickname = localStorage.getItem("nickname") || "사용자"
     const [messages, setMessages] = useState([])
@@ -102,7 +103,7 @@ function ChatPage({ onBack, onCharacter, onHome, onHistory, onAnalysis, onWishli
             fontFamily: "'GriounPolice', cursive",
             backgroundImage: `linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px)`,
             backgroundSize: "28px 28px",
-            backgroundColor: "#f5f5f5", // 원래의 밝고 귀여운 모눈종이 패턴 배경으로 복구
+            backgroundColor: "#f5f5f5",
             overflow: "hidden",
             boxSizing: "border-box"
         }}>
@@ -232,7 +233,8 @@ function ChatPage({ onBack, onCharacter, onHome, onHistory, onAnalysis, onWishli
                 </div>
             </div>
 
-            {/* 좌측 LNB 바 (라이트 테마 사이드바) */}
+            {/* 좌측 LNB 바 - PC only */}
+            {!isMobile && (
             <div style={{
                 position: "fixed",
                 top: "64px",
@@ -271,18 +273,20 @@ function ChatPage({ onBack, onCharacter, onHome, onHistory, onAnalysis, onWishli
                     </div>
                 ))}
             </div>
+            )}
 
             {/* 메인 작업 영역 */}
             <div style={{
-                marginLeft: "72px",
+                marginLeft: isMobile ? 0 : "72px",
                 marginTop: "64px",
-                width: "calc(100vw - 72px)",
-                height: "calc(100vh - 64px)",
-                padding: "20px 40px",
+                width: isMobile ? "100%" : "calc(100vw - 72px)",
+                height: isMobile ? "calc(100vh - 64px)" : "calc(100vh - 64px)",
+                padding: isMobile ? "12px" : "20px 40px",
+                paddingBottom: isMobile ? "70px" : "20px",
                 boxSizing: "border-box",
                 display: "flex",
                 justifyContent: "center",
-                alignItems: "center",
+                alignItems: isMobile ? "stretch" : "center",
                 overflow: "hidden",
                 zIndex: 5
             }}>
@@ -597,6 +601,7 @@ function ChatPage({ onBack, onCharacter, onHome, onHistory, onAnalysis, onWishli
 
                 </div>
             </div>
+            {isMobile && <MobileBottomNav navItems={navItems} current={current} />}
         </div>
     )
 }

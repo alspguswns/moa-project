@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { API } from "../config.js"
+import MobileBottomNav from "../components/MobileBottomNav"
 
 // 카테고리별 우선순위 배지 설정
 const PRIORITY_STYLES = {
@@ -8,7 +9,7 @@ const PRIORITY_STYLES = {
     3: { text: "3순위 ⭐", color: "#95A5A6", bg: "#f5f7f8" },
 }
 
-function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout, current }) {
+function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout, current, isMobile }) {
     const userId = localStorage.getItem("user_id")
     const nickname = localStorage.getItem("nickname") || "사용자"
     const [items, setItems] = useState([])
@@ -170,13 +171,13 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
     return (
         <div style={{
             display: "flex",
-            height: "100vh",
+            height: isMobile ? "auto" : "100vh", minHeight: "100vh",
             width: "100vw",
             fontFamily: "'GriounPolice', cursive",
             backgroundImage: `linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px)`,
             backgroundSize: "28px 28px",
             backgroundColor: "#f5f5f5",
-            overflow: "hidden",
+            overflow: isMobile ? "auto" : "hidden",
             boxSizing: "border-box"
         }}>
 
@@ -304,7 +305,8 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                 </div>
             </div>
 
-            {/* 좌측 사이드 LNB 바 */}
+            {/* 좌측 사이드 LNB 바 - PC only */}
+            {!isMobile && (
             <div style={{
                 position: "fixed",
                 top: "64px",
@@ -343,18 +345,20 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                     </div>
                 ))}
             </div>
+            )}
 
             {/* 메인 콘텐츠 영역 */}
             <div style={{
-                marginLeft: "72px",
+                marginLeft: isMobile ? 0 : "72px",
                 marginTop: "64px",
-                width: "calc(100vw - 72px)",
-                height: "calc(100vh - 64px)",
-                padding: "24px 32px",
+                width: isMobile ? "100%" : "calc(100vw - 72px)",
+                height: isMobile ? "auto" : "calc(100vh - 64px)",
+                padding: isMobile ? "16px" : "24px 32px",
+                paddingBottom: isMobile ? "80px" : "24px",
                 boxSizing: "border-box",
                 display: "flex",
                 flexDirection: "column",
-                overflow: "hidden"
+                overflow: isMobile ? "visible" : "hidden"
             }}>
 
                 {/* 헤더 타이틀 */}
@@ -366,10 +370,10 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                 {/* 2단 메인 레이아웃 (좌: 독립 스크롤 위시 목록, 우: 요약 통계 및 추가 폼) */}
                 <div style={{
                     display: "grid",
-                    gridTemplateColumns: "1.5fr 1.2fr", // 도면처럼 위시 목록(좌)을 더 넓게 배치
-                    gap: "24px",
-                    flex: 1,
-                    minHeight: 0,
+                    gridTemplateColumns: isMobile ? "1fr" : "1.5fr 1.2fr",
+                    gap: "16px",
+                    flex: isMobile ? "0 0 auto" : 1,
+                    minHeight: isMobile ? undefined : 0,
                     width: "100%",
                     boxSizing: "border-box"
                 }}>
@@ -620,6 +624,7 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
 
                 </div>
             </div>
+            {isMobile && <MobileBottomNav navItems={navItems} current={current} />}
         </div>
     )
 }

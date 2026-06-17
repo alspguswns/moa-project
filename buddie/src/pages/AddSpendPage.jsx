@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { API } from "../config.js"
+import MobileBottomNav from "../components/MobileBottomNav"
 
 const CATEGORIES = [
     { label: "식비", emoji: "🍚" },
@@ -28,7 +29,7 @@ const INCOME_CATEGORIES = [
     { label: "기타", emoji: "📦" },
 ]
 
-function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onChat, onGame, onLogout, current }) {
+function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onChat, onGame, onLogout, current, isMobile }) {
     const today = new Date()
     const nickname = localStorage.getItem("nickname") || "사용자"
     const [amount, setAmount] = useState("")
@@ -190,13 +191,13 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
     return (
         <div style={{
             display: "flex",
-            height: "100vh",
+            height: isMobile ? "auto" : "100vh", minHeight: "100vh",
             width: "100vw",
             fontFamily: "'GriounPolice', cursive",
             backgroundImage: `linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px)`,
             backgroundSize: "28px 28px",
             backgroundColor: "#f5f5f5",
-            overflow: "hidden",
+            overflow: isMobile ? "auto" : "hidden",
             boxSizing: "border-box"
         }}>
 
@@ -333,7 +334,8 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
                 </div>
             </div>
 
-            {/* 좌측 LNB 사이드바 */}
+            {/* 좌측 LNB 사이드바 - PC only */}
+            {!isMobile && (
             <div style={{
                 position: "fixed",
                 top: "64px",
@@ -372,20 +374,22 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
                     </div>
                 ))}
             </div>
+            )}
 
             {/* 메인 콘텐츠 영역 */}
             <div style={{
-                marginLeft: "72px",
+                marginLeft: isMobile ? 0 : "72px",
                 marginTop: "64px",
-                width: "calc(100vw - 72px)",
-                height: "calc(100vh - 64px)",
-                padding: "24px 32px",
+                width: isMobile ? "100%" : "calc(100vw - 72px)",
+                height: isMobile ? "auto" : "calc(100vh - 64px)",
+                padding: isMobile ? "16px" : "24px 32px",
+                paddingBottom: isMobile ? "80px" : "24px",
                 boxSizing: "border-box",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                justifyContent: "center",
-                overflow: "hidden"
+                justifyContent: isMobile ? "flex-start" : "center",
+                overflow: isMobile ? "visible" : "hidden"
             }}>
 
                 {/* 헤더 버튼 및 타이틀 */}
@@ -715,6 +719,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
 
                 </div>
             </div>
+            {isMobile && <MobileBottomNav navItems={navItems} current={current} />}
         </div>
     )
 }

@@ -53,19 +53,22 @@ function SignupPage({ onSignup, onBack }) {
             minHeight: "100vh",
             display: "flex",
             justifyContent: "center",
-            alignItems: "center",
+            alignItems: "flex-start",
+            paddingTop: "24px",
+            paddingBottom: "24px",
             backgroundImage: `
             linear-gradient(#e0e0e0 1px, transparent 1px),
              linear-gradient(90deg, #e0e0e0 1px, transparent 1px)`,
             backgroundSize: "28px 28px",
             backgroundColor: "#f5f5f5",
-            fontFamily: "'GriounPolice', cursive"
+            fontFamily: "'GriounPolice', cursive",
+            boxSizing: "border-box"
         }}>
             <div style={{
                 background: "white",
                 borderRadius: "24px",
-                padding: "40px 32px",
-                width: "300px",
+                padding: "40px 28px",
+                width: "min(360px, calc(100vw - 32px))",
                 boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
                 border: "1px solid #eee",
             }}>

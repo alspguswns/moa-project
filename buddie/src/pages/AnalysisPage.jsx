@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { API } from "../config.js"
+import MobileBottomNav from "../components/MobileBottomNav"
 
 const CATEGORY_EMOJI = {
     "식비": "🍚", "카페": "☕", "교통": "🚌", "쇼핑": "🛍️",
@@ -8,7 +9,7 @@ const CATEGORY_EMOJI = {
     "급여": "💰", "알바": "💼", "용돈": "🎁", "부수입": "📈",
 }
 
-function AnalysisPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout, current }) {
+function AnalysisPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout, current, isMobile }) {
     const nickname = localStorage.getItem("nickname") || "사용자"
     const [data, setData] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -53,7 +54,7 @@ function AnalysisPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
     ]
 
     const renderDashboard = () => (
-        <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "20px", flex: 1, minHeight: 0 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.2fr 1fr", gap: "20px", flex: isMobile ? "0 0 auto" : 1, minHeight: isMobile ? undefined : 0 }}>
 
             {/* 왼쪽 */}
             <div style={{ display: "flex", flexDirection: "column", gap: "16px", minHeight: 0 }}>
@@ -167,7 +168,7 @@ function AnalysisPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
     )
 
     const renderCompare = () => (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", flex: 1, minHeight: 0 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "20px", flex: isMobile ? "0 0 auto" : 1, minHeight: isMobile ? undefined : 0 }}>
             <section style={cardStyle}>
                 <p style={{ margin: "0 0 16px", fontSize: "14px", fontWeight: "700", color: "#111" }}>📊 지난달 vs 이번달 비교</p>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "16px" }}>
@@ -280,11 +281,11 @@ function AnalysisPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
 
     return (
         <div style={{
-            display: "flex", height: "100vh", width: "100vw",
+            display: "flex", height: isMobile ? "auto" : "100vh", minHeight: "100vh", width: "100vw",
             fontFamily: "'GriounPolice', cursive",
             backgroundImage: `linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px)`,
             backgroundSize: "28px 28px", backgroundColor: "#f5f5f5",
-            overflow: "hidden", boxSizing: "border-box"
+            overflow: isMobile ? "auto" : "hidden", boxSizing: "border-box"
         }}>
 
             {/* 모달 */}
@@ -319,7 +320,8 @@ function AnalysisPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                 </div>
             </div>
 
-            {/* 사이드바 */}
+            {/* 사이드바 - PC only */}
+            {!isMobile && (
             <div style={{ position: "fixed", top: "64px", left: 0, width: "72px", height: "calc(100vh - 64px)", background: "white", borderRight: "1px solid #eee", display: "flex", flexDirection: "column", alignItems: "center", padding: "24px 0", gap: "12px", zIndex: 100 }}>
                 {navItems.map(item => (
                     <div key={item.key} onClick={item.onClick} style={{ width: "48px", height: "48px", borderRadius: "14px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "22px", cursor: "pointer", background: current === item.key ? "#fff0f3" : "transparent", border: current === item.key ? "1.5px solid #F4A7B9" : "1.5px solid transparent", transition: "all 0.2s" }}>
@@ -327,25 +329,26 @@ function AnalysisPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                     </div>
                 ))}
             </div>
+            )}
 
             {/* 메인 콘텐츠 */}
-            <div style={{ marginLeft: "72px", marginTop: "64px", width: "calc(100vw - 72px)", height: "calc(100vh - 64px)", padding: "24px 32px", boxSizing: "border-box", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+            <div style={{ marginLeft: isMobile ? 0 : "72px", marginTop: "64px", width: isMobile ? "100%" : "calc(100vw - 72px)", height: isMobile ? "auto" : "calc(100vh - 64px)", padding: isMobile ? "16px" : "24px 32px", paddingBottom: isMobile ? "80px" : "24px", boxSizing: "border-box", display: "flex", flexDirection: "column", overflow: isMobile ? "visible" : "hidden" }}>
 
                 {/* 타이틀 + 탭 */}
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px", flexShrink: 0 }}>
+                <div style={{ display: "flex", alignItems: isMobile ? "flex-start" : "center", justifyContent: "space-between", marginBottom: "16px", flexShrink: 0, flexDirection: isMobile ? "column" : "row", gap: isMobile ? "10px" : 0 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                         <span style={{ fontSize: "24px" }}>📊</span>
                         <span style={{ fontSize: "20px", fontWeight: "700", color: "#333" }}>소비 분석</span>
                     </div>
-                    <div style={{ display: "flex", gap: "8px" }}>
+                    <div style={{ display: "flex", gap: "6px", flexWrap: isMobile ? "wrap" : "nowrap" }}>
                         {[
-                            { key: "dashboard", label: "📈 이번달 현황" },
-                            { key: "compare", label: "🔄 지난달 비교" },
-                            { key: "report", label: "📋 분석 리포트" }
+                            { key: "dashboard", label: isMobile ? "📈 현황" : "📈 이번달 현황" },
+                            { key: "compare", label: isMobile ? "🔄 비교" : "🔄 지난달 비교" },
+                            { key: "report", label: isMobile ? "📋 리포트" : "📋 분석 리포트" }
                         ].map(tab => (
                             <button key={tab.key} onClick={() => setActiveTab(tab.key)} style={{
-                                padding: "8px 16px", borderRadius: "20px", border: "none", cursor: "pointer",
-                                fontSize: "12px", fontWeight: "700", fontFamily: "inherit",
+                                padding: "8px 12px", borderRadius: "20px", border: "none", cursor: "pointer",
+                                fontSize: "11px", fontWeight: "700", fontFamily: "inherit",
                                 background: activeTab === tab.key ? "#F4A7B9" : "#f0f0f0",
                                 color: activeTab === tab.key ? "white" : "#666",
                                 transition: "all 0.2s"
@@ -374,6 +377,7 @@ function AnalysisPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                     </>
                 )}
             </div>
+            {isMobile && <MobileBottomNav navItems={navItems} current={current} />}
         </div>
     )
 }

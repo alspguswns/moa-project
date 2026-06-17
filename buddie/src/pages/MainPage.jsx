@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react"
 import { API } from "../config.js"
+import MobileBottomNav from "../components/MobileBottomNav"
 
-function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpend, onLogout, onProfile, onGame, userId: propUserId, current }) {    const nickname = localStorage.getItem("nickname") || "사용자"
+function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpend, onLogout, onProfile, onGame, userId: propUserId, current, isMobile }) {    const nickname = localStorage.getItem("nickname") || "사용자"
     const [transactions, setTransactions] = useState([])
     const [totalIncome, setTotalIncome] = useState(0)
     const [totalExpense, setTotalExpense] = useState(0)
@@ -104,7 +105,8 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
     return (
         <div style={{
             display: "flex",
-            height: "100vh", // 정확히 뷰포트 높이로 고정
+            height: isMobile ? "auto" : "100vh",
+            minHeight: "100vh",
             width: "100vw",
             fontFamily: "'Pretendard', -apple-system, 'GriounPolice', sans-serif",
             backgroundImage: `
@@ -113,7 +115,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
             `,
             backgroundSize: "28px 28px",
             backgroundColor: "#f5f5f5",
-            overflow: "hidden", // 전체 아웃라인 스크롤 제거
+            overflow: isMobile ? "auto" : "hidden",
             boxSizing: "border-box"
         }}>
 
@@ -287,7 +289,8 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                 </div>
             </div>
 
-            {/* side bar */}
+            {/* side bar - PC only */}
+            {!isMobile && (
             <div style={{
                 position: "fixed",
                 top: "64px",
@@ -326,21 +329,23 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                     </div>
                 ))}
             </div>
+            )}
 
             {/* main area */}
             {}
             <div style={{
-                marginLeft: "72px",
+                marginLeft: isMobile ? 0 : "72px",
                 marginTop: "64px",
-                width: "calc(100vw - 72px)",
-                height: "calc(100vh - 64px)",
-                padding: "24px 32px",
+                width: isMobile ? "100%" : "calc(100vw - 72px)",
+                height: isMobile ? "auto" : "calc(100vh - 64px)",
+                padding: isMobile ? "16px" : "24px 32px",
+                paddingBottom: isMobile ? "80px" : "24px",
                 boxSizing: "border-box",
-                overflow: "hidden"
+                overflow: isMobile ? "auto" : "hidden"
             }}>
                 <div style={{
                     maxWidth: "1480px",
-                    height: "100%",
+                    height: isMobile ? "auto" : "100%",
                     margin: "0 auto",
                     display: "flex",
                     flexDirection: "column"
@@ -348,10 +353,10 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                     {/* dashboard grid */}
                     <div style={{
                         display: "grid",
-                        gridTemplateColumns: "1fr 340px",
-                        gap: "24px",
+                        gridTemplateColumns: isMobile ? "1fr" : "1fr 340px",
+                        gap: "16px",
                         alignItems: "stretch",
-                        height: "100%",
+                        height: isMobile ? "auto" : "100%",
                         width: "100%",
                         boxSizing: "border-box"
                     }}>
@@ -360,8 +365,8 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                             display: "flex",
                             flexDirection: "column",
                             gap: "16px",
-                            height: "100%",
-                            overflow: "hidden" // 전체 세로 오버플로우 제한
+                            height: isMobile ? "auto" : "100%",
+                            overflow: isMobile ? "visible" : "hidden"
                         }}>
                             {/* summary card */}
                             <section style={{
@@ -522,10 +527,11 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                 padding: "20px 24px",
                                 boxShadow: "0 8px 24px rgba(0,0,0,0.04)",
                                 border: "1px solid #f0f0f0",
-                                flex: "1 1 0%", // 유동적으로 남은 자리를 전부 차지하도록 설정
+                                flex: isMobile ? "0 0 auto" : "1 1 0%",
                                 display: "flex",
                                 flexDirection: "column",
-                                overflow: "hidden" // 내부 스크롤을 활성화하기 위해 영역 오버플로우 막기
+                                overflow: isMobile ? "visible" : "hidden",
+                                minHeight: isMobile ? "200px" : undefined
                             }}>
                                 <div style={{
                                     fontSize: "14px",
@@ -538,7 +544,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
 
                                 <div style={{
                                     flex: 1,
-                                    overflowY: "auto", // 테이블 영역에만 스크롤 지정
+                                    overflowY: isMobile ? "visible" : "auto",
                                     paddingRight: "4px"
                                 }}>
                                     <table style={{
@@ -549,32 +555,29 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                         <thead style={{ position: "sticky", top: 0, zIndex: 10 }}>
                                         <tr style={{ background: "#f8fafc" }}>
                                             <th style={{ padding: "10px 12px", borderRadius: "10px 0 0 10px", textAlign: "left", color: "#475569", fontWeight: "700" }}>Memo</th>
-                                            <th style={{ padding: "10px 12px", textAlign: "left", color: "#475569", fontWeight: "700" }}>Category</th>
-                                            <th style={{ padding: "10px 12px", textAlign: "left", color: "#475569", fontWeight: "700" }}>Date</th>
+                                            {!isMobile && <th style={{ padding: "10px 12px", textAlign: "left", color: "#475569", fontWeight: "700" }}>Category</th>}
+                                            {!isMobile && <th style={{ padding: "10px 12px", textAlign: "left", color: "#475569", fontWeight: "700" }}>Date</th>}
                                             <th style={{ padding: "10px 12px", textAlign: "left", color: "#475569", fontWeight: "700" }}>Amount</th>
-                                            <th style={{ padding: "10px 12px", borderRadius: "0 10px 10px 0", textAlign: "center", color: "#475569", fontWeight: "700", width: "50px" }}>Action</th>
+                                            <th style={{ padding: "10px 12px", borderRadius: "0 10px 10px 0", textAlign: "center", color: "#475569", fontWeight: "700", width: "50px" }}>Del</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         {recent.length === 0 ? (
                                             <tr>
-                                                <td colSpan={5} style={{ textAlign: "center", padding: "38px 20px", color: "#aaa" }}>
+                                                <td colSpan={isMobile ? 3 : 5} style={{ textAlign: "center", padding: "38px 20px", color: "#aaa" }}>
                                                     아직 내역이 없어요! 아래 버튼으로 첫 기록을 추가해보세요.
                                                 </td>
                                             </tr>
                                         ) : (
                                             recent.map(item => (
                                                 <tr key={item.id} style={{ borderBottom: "1px solid #f7f7f7" }}>
-                                                    <td style={{ padding: "11px 12px", color: "#111", fontWeight: "600", maxWidth: "180px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                                    <td style={{ padding: "11px 12px", color: "#111", fontWeight: "600", maxWidth: isMobile ? "100px" : "180px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                                                         {item.memo || "메모 없음"}
+                                                        {isMobile && <div style={{ fontSize: "10px", color: "#aaa", fontWeight: "400" }}>{item.category} · {item.date}</div>}
                                                     </td>
-                                                    <td style={{ padding: "11px 12px", color: "#555" }}>
-                                                        {item.category}
-                                                    </td>
-                                                    <td style={{ padding: "11px 12px", color: "#777" }}>
-                                                        {item.date}
-                                                    </td>
-                                                    <td style={{ padding: "11px 12px", fontWeight: "800", color: item.type === "지출" ? "#F4A7B9" : "#7F77DD" }}>
+                                                    {!isMobile && <td style={{ padding: "11px 12px", color: "#555" }}>{item.category}</td>}
+                                                    {!isMobile && <td style={{ padding: "11px 12px", color: "#777" }}>{item.date}</td>}
+                                                    <td style={{ padding: "11px 12px", fontWeight: "800", color: item.type === "지출" ? "#F4A7B9" : "#7F77DD", whiteSpace: "nowrap" }}>
                                                         {item.type === "지출" ? "-" : "+"}{item.amount.toLocaleString()}원
                                                     </td>
                                                     <td style={{ padding: "11px 12px", textAlign: "center" }}>
@@ -589,8 +592,6 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                                                 borderRadius: "6px",
                                                                 transition: "background 0.2s"
                                                             }}
-                                                            onMouseOver={(e) => e.currentTarget.style.background = "#fff0f3"}
-                                                            onMouseOut={(e) => e.currentTarget.style.background = "none"}
                                                             title="삭제"
                                                         >
                                                             ❌
@@ -645,11 +646,11 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                         {}
                         <aside style={{
                             display: "flex",
-                            height: "100%"
+                            height: isMobile ? "auto" : "100%"
                         }}>
                             <section style={{
                                 width: "100%",
-                                height: "100%",
+                                height: isMobile ? "auto" : "100%",
                                 background: "white",
                                 borderRadius: "24px",
                                 padding: "24px 20px",
@@ -658,7 +659,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                 textAlign: "center",
                                 boxSizing: "border-box",
                                 display: "flex",
-                                flexDirection: "column",
+                                flexDirection: isMobile ? "column-reverse" : "column",
                                 justifyContent: "space-between",
                                 gap: "16px"
                             }}>
@@ -715,8 +716,8 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                         padding: "14px 16px",
                                         border: "1px solid #ffd9e2",
                                         textAlign: "left",
-                                        flex: 1,
-                                        overflowY: "auto" // 한마디가 너무 길어지면 해당 부분만 스크롤
+                                        flex: isMobile ? "0 0 auto" : 1,
+                                        overflowY: isMobile ? "visible" : "auto"
                                     }}>
                                         <p style={{
                                             margin: 0,
@@ -785,6 +786,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                     </div>
                 </div>
             </div>
+            {isMobile && <MobileBottomNav navItems={navItems} current={current} />}
         </div>
     )
 }
