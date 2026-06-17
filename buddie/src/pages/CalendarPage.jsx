@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import BottomNav from "../components/BottomNav"
+import { API } from "../config.js"
 
 function CalendarPage({ onHome, onHistory, onCalendar, onAnalysis, onWishlist, onChat, current }) {
     const today = new Date()
@@ -13,7 +14,7 @@ function CalendarPage({ onHome, onHistory, onCalendar, onAnalysis, onWishlist, o
     useEffect(() => {
         const userId = localStorage.getItem("user_id")
         if (!userId) return
-        fetch(`http://127.0.0.1:8000/expense/${userId}`)
+        fetch(`${API}/expense/${userId}`)
             .then((res) => res.json())
             .then((data) => setTransactions(Array.isArray(data) ? data : []))
             .catch((e) => console.error(e))

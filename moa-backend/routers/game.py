@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from database import get_db
-from models import User, AICharacter, Attendance, Quest, Achievement, ShopItem
+from models import User, AICharacter, Attendance, Quest, Achievement, ShopItem, Inventory
 from datetime import date, datetime, timedelta
 
 router = APIRouter()
@@ -320,7 +320,6 @@ class BuyRequest(BaseModel):
 def buy_item(request: BuyRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == request.user_id).first()
     item = db.query(ShopItem).filter(ShopItem.id == request.item_id).first()
-    character = db.query(AICharacter).filter(AICharacter.user_id == request.user_id).first()
 
     if not user or not item:
         raise HTTPException(status_code=404, detail="유저 또는 아이템을 찾을 수 없어요!")
@@ -329,27 +328,17 @@ def buy_item(request: BuyRequest, db: Session = Depends(get_db)):
 
     user.seeds -= item.price
 
-    if character:
-        apply_daily_decay(character)
-        if item.effect_type == "hunger":
-            character.hunger = min(100, character.hunger + item.effect_value)
-        elif item.effect_type == "mood":
-            character.mood = min(100, character.mood + item.effect_value)
-        elif item.effect_type == "both":
-            if item.item_type == "feed":
-                character.hunger = min(100, character.hunger + item.effect_value)
-                character.mood   = min(100, character.mood + 10)
-            else:
-                character.mood   = min(100, character.mood + item.effect_value)
+    # 인벤토리에 추가 (기존 항목이면 수량 증가)
+    inv = db.query(Inventory).filter(
+        Inventory.user_id == request.user_id,
+        Inventory.item_id == request.item_id
+    ).first()
+    if inv:
+        inv.quantity += 1
+    else:
+        inv = Inventory(user_id=request.user_id, item_id=request.item_id, quantity=1)
+        db.add(inv)
 
-        # 퀘스트 — 캐릭터 돌보기 자동 완료
-        today = date.today().isoformat()
-        quest = db.query(Quest).filter(Quest.user_id == request.user_id, Quest.date == today).first()
-        if quest and not quest.q_feed and item.item_type in ["feed", "toy"]:
-            quest.q_feed = True
-            give_seeds(user, 10)
-
-    # 업적
     new_achievements = []
     if unlock_achievement(request.user_id, "first_buy", db):
         new_achievements.append("첫 구매")
@@ -358,13 +347,105 @@ def buy_item(request: BuyRequest, db: Session = Depends(get_db)):
     db.commit()
 
     return {
-        "message": f"{item.name} 사용 완료!",
+        "message": f"{item.name} 구매 완료! 거실 가방에 넣어뒀어요 🎒",
         "remaining_seeds": user.seeds,
-        "new_achievements": new_achievements,
+        "new_achievements": new_achievements
+    }
+
+
+# ──────────────────────────────────────────
+# 인벤토리 조회
+# ──────────────────────────────────────────
+@router.get("/inventory/{user_id}")
+def get_inventory(user_id: int, db: Session = Depends(get_db)):
+    inventories = db.query(Inventory).filter(
+        Inventory.user_id == user_id,
+        Inventory.quantity > 0
+    ).all()
+
+    result = []
+    for inv in inventories:
+        item = db.query(ShopItem).filter(ShopItem.id == inv.item_id).first()
+        if item:
+            result.append({
+                "inventory_id": inv.id,
+                "item_id": inv.item_id,
+                "name": item.name,
+                "item_type": item.item_type,
+                "effect_type": item.effect_type,
+                "effect_value": item.effect_value,
+                "description": item.description,
+                "quantity": inv.quantity
+            })
+    return result
+
+
+# ──────────────────────────────────────────
+# 거실: 아이템 사용 (먹이주기 / 놀아주기)
+# ──────────────────────────────────────────
+class UseItemRequest(BaseModel):
+    user_id: int
+    item_id: int
+
+@router.post("/use-item")
+def use_item(request: UseItemRequest, db: Session = Depends(get_db)):
+    inv = db.query(Inventory).filter(
+        Inventory.user_id == request.user_id,
+        Inventory.item_id == request.item_id
+    ).first()
+
+    if not inv or inv.quantity <= 0:
+        raise HTTPException(status_code=400, detail="해당 아이템이 없어요!")
+
+    item = db.query(ShopItem).filter(ShopItem.id == request.item_id).first()
+    character = db.query(AICharacter).filter(AICharacter.user_id == request.user_id).first()
+    user = db.query(User).filter(User.id == request.user_id).first()
+
+    if not item or not character:
+        raise HTTPException(status_code=404, detail="아이템 또는 캐릭터를 찾을 수 없어요!")
+
+    inv.quantity -= 1
+
+    apply_daily_decay(character)
+    if item.effect_type == "hunger":
+        character.hunger = min(100, character.hunger + item.effect_value)
+    elif item.effect_type == "mood":
+        character.mood = min(100, character.mood + item.effect_value)
+    elif item.effect_type == "both":
+        if item.item_type == "feed":
+            character.hunger = min(100, character.hunger + item.effect_value)
+            character.mood   = min(100, character.mood + 10)
+        else:
+            character.mood   = min(100, character.mood + item.effect_value)
+    update_stage(character)
+
+    # 캐릭터 돌보기 퀘스트 자동 완료
+    today = date.today().isoformat()
+    quest = db.query(Quest).filter(Quest.user_id == request.user_id, Quest.date == today).first()
+    new_achievements = []
+    if quest and not quest.q_feed and item.item_type in ["feed", "toy"]:
+        quest.q_feed = True
+        if user:
+            give_seeds(user, 10)
+        all_done = all([quest.q_record, quest.q_check, quest.q_category, quest.q_feed])
+        if all_done and unlock_achievement(request.user_id, "perfect_day", db):
+            new_achievements.append("완벽한 하루")
+            if user:
+                give_seeds(user, 150)
+
+    db.commit()
+
+    action = "먹이를 줬어요" if item.item_type == "feed" else "같이 놀았어요"
+    return {
+        "message": f"{item.name}으로 {action}! 🐷",
         "character": {
-            "hunger": character.hunger if character else 0,
-            "mood": character.mood if character else 0
-        }
+            "hunger": character.hunger,
+            "mood": character.mood,
+            "exp": character.exp,
+            "stage": character.stage
+        },
+        "remaining_quantity": inv.quantity,
+        "new_achievements": new_achievements
     }
 
 # ──────────────────────────────────────────

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { API } from "../config.js"
 
 function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpend, onLogout, onProfile, onGame, userId: propUserId, current }) {    const nickname = localStorage.getItem("nickname") || "사용자"
     const [transactions, setTransactions] = useState([])
@@ -28,7 +29,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
             return
         }
 
-        fetch(`http://127.0.0.1:8000/expense/${userId}`)
+        fetch(`${API}/expense/${userId}`)
             .then(res => res.json())
             .then(data => {
                 const list = Array.isArray(data) ? data : []
@@ -37,7 +38,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
             })
             .catch(e => console.error(e))
 
-        fetch(`http://127.0.0.1:8000/ai/${userId}`)
+        fetch(`${API}/ai/${userId}`)
             .then(res => res.json())
             .then(data => {
                 setAiMessage(data.message)
@@ -59,7 +60,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
     }
 
     const executeDelete = (id) => {
-        fetch(`http://127.0.0.1:8000/expense/${id}`, {
+        fetch(`${API}/expense/${id}`, {
             method: "DELETE",
         })
             .then(res => {

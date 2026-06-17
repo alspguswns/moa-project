@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react"
+import { API } from "../config.js"
 
 function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout, onEditProfile, current }) {
     const userId = localStorage.getItem("user_id")
@@ -30,7 +31,7 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
             return
         }
         setLoading(true)
-        fetch(`http://127.0.0.1:8000/character/${userId}`)
+        fetch(`${API}/character/${userId}`)
             .then(res => res.json())
             .then(data => {
                 setName(data.name || "MOA")
@@ -60,7 +61,7 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
 
     const handleSave = async () => {
         try {
-            const res = await fetch("http://127.0.0.1:8000/character/save", {
+            const res = await fetch(`${API}/character/save`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

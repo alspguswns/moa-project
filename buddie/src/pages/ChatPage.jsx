@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react"
+import { API } from "../config.js"
 
 // 상위 은행 챗봇 스타일의 추천 질문 프리셋 목록
 const QUICK_PROMPTS = [
@@ -26,7 +27,7 @@ function ChatPage({ onBack, onCharacter, onHome, onHistory, onAnalysis, onWishli
 
     useEffect(() => {
         if (!userId) return
-        fetch(`http://127.0.0.1:8000/character/${userId}`)
+        fetch(`${API}/character/${userId}`)
             .then(res => res.json())
             .then(data => setCharacter(data))
             .catch(e => console.error(e))
@@ -51,7 +52,7 @@ function ChatPage({ onBack, onCharacter, onHome, onHistory, onAnalysis, onWishli
         setLoading(true)
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/character/chat", {
+            const response = await fetch(`${API}/character/chat`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

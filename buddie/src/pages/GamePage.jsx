@@ -1,19 +1,19 @@
 import { useState, useEffect } from "react"
-
-const API = "http://127.0.0.1:8000"
+import { API } from "../config.js"
 
 function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout, current }) {
     const userId = parseInt(localStorage.getItem("user_id"))
     const nickname = localStorage.getItem("nickname") || "사용자"
 
-    const [status, setStatus] = useState(null)       // 캐릭터 상태
-    const [attendance, setAttendance] = useState(null) // 출석 정보
-    const [quest, setQuest] = useState(null)           // 퀘스트
-    const [shopItems, setShopItems] = useState([])     // 상점 아이템
-    const [achievements, setAchievements] = useState([]) // 업적
+    const [status, setStatus] = useState(null)
+    const [attendance, setAttendance] = useState(null)
+    const [quest, setQuest] = useState(null)
+    const [shopItems, setShopItems] = useState([])
+    const [achievements, setAchievements] = useState([])
+    const [inventory, setInventory] = useState([])
     const [loading, setLoading] = useState(true)
-    const [activeTab, setActiveTab] = useState("home") // home / quest / shop / achievement
-    const [toast, setToast] = useState(null)           // 토스트 알림
+    const [activeTab, setActiveTab] = useState("home") // home(거실) / quest / shop / achievement
+    const [toast, setToast] = useState(null)
 
     const [modalConfig, setModalConfig] = useState({ isOpen: false, type: "alert", message: "", onConfirm: null })
 
@@ -39,18 +39,20 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
     const loadAll = async () => {
         if (!userId) { setLoading(false); return }
         try {
-            const [statusRes, attRes, questRes, shopRes, achRes] = await Promise.all([
+            const [statusRes, attRes, questRes, shopRes, achRes, invRes] = await Promise.all([
                 fetch(`${API}/game/character-status/${userId}`),
                 fetch(`${API}/game/attendance/${userId}`),
                 fetch(`${API}/game/quest/${userId}`),
                 fetch(`${API}/game/shop`),
-                fetch(`${API}/game/achievements/${userId}`)
+                fetch(`${API}/game/achievements/${userId}`),
+                fetch(`${API}/game/inventory/${userId}`)
             ])
             setStatus(await statusRes.json())
             setAttendance(await attRes.json())
             setQuest(await questRes.json())
             setShopItems(await shopRes.json())
             setAchievements(await achRes.json())
+            setInventory(await invRes.json())
         } catch (e) {
             console.error(e)
         }
@@ -101,7 +103,7 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
         } catch (e) { showToast("서버 오류가 발생했어요 😢", "error") }
     }
 
-    // 아이템 구매
+    // 아이템 구매 (인벤토리에 추가)
     const handleBuy = async (item) => {
         setModalConfig({
             isOpen: true, type: "confirm",
@@ -129,6 +131,27 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
         })
     }
 
+    // 거실: 아이템 사용 (먹이주기 / 놀아주기)
+    const handleUseItem = async (item) => {
+        try {
+            const res = await fetch(`${API}/game/use-item`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_id: userId, item_id: item.item_id })
+            })
+            const data = await res.json()
+            if (res.ok) {
+                showToast(data.message, "success")
+                if (data.new_achievements?.length > 0) {
+                    setTimeout(() => showToast(`🏆 업적 해금: ${data.new_achievements.join(", ")}`, "achievement"), 1500)
+                }
+                loadAll()
+            } else {
+                showToast(data.detail || "사용에 실패했어요 😢", "error")
+            }
+        } catch (e) { showToast("서버 오류가 발생했어요 😢", "error") }
+    }
+
     // 캐릭터 이모지 (단계별)
     const getCharacterEmoji = (stage, hunger, mood) => {
         if (hunger < 20 || mood < 20) return "😵"
@@ -149,138 +172,173 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
         return Math.min(Math.round(((exp - min) / (max - min)) * 100), 100)
     }
 
-    // ── 탭: 홈 ──────────────────────────────────────
-    const renderHome = () => (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", flex: 1, minHeight: 0 }}>
+    // ── 탭: 거실 ──────────────────────────────────────
+    const renderHome = () => {
+        const feedItems = inventory.filter(i => i.item_type === "feed")
+        const toyItems = inventory.filter(i => i.item_type === "toy")
 
-            {/* 캐릭터 카드 */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                <section style={{ ...card, flex: 1, alignItems: "center", justifyContent: "center" }}>
-                    <div style={{ textAlign: "center" }}>
-                        {/* 캐릭터 */}
-                        <div style={{
-                            width: "140px", height: "140px", borderRadius: "50%",
-                            background: `${getStageColor(status?.stage)}33`,
-                            border: `4px solid ${getStageColor(status?.stage)}`,
-                            display: "flex", alignItems: "center", justifyContent: "center",
-                            fontSize: "72px", margin: "0 auto 16px", boxShadow: "0 8px 24px rgba(0,0,0,0.08)"
-                        }}>
-                            {getCharacterEmoji(status?.stage, status?.hunger, status?.mood)}
-                        </div>
+        return (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", flex: 1, minHeight: 0 }}>
 
-                        <p style={{ margin: "0 0 4px", fontSize: "20px", fontWeight: "800", color: "#333" }}>
-                            {status?.name || "MOA"}
-                        </p>
-                        <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", background: "#fff0f3", borderRadius: "20px", padding: "4px 14px", border: "1px solid #ffd9e2", marginBottom: "20px" }}>
-                            <span style={{ fontSize: "12px", fontWeight: "700", color: "#F4A7B9" }}>{status?.stage || "알"} 단계</span>
-                        </div>
-
-                        {/* 경험치 바 */}
-                        <div style={{ width: "100%", marginBottom: "16px" }}>
-                            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-                                <span style={{ fontSize: "11px", color: "#aaa" }}>경험치</span>
-                                <span style={{ fontSize: "11px", color: "#aaa" }}>{status?.exp || 0} / {status?.stage_next_exp || 100}</span>
-                            </div>
-                            <div style={{ background: "#f0f0f0", borderRadius: "999px", height: "10px", overflow: "hidden" }}>
-                                <div style={{ background: "linear-gradient(90deg, #F4A7B9, #ff6b9d)", borderRadius: "999px", height: "100%", width: `${getExpPercent(status?.exp, status?.stage)}%`, transition: "width 0.5s" }} />
-                            </div>
-                        </div>
-
-                        {/* 씨앗 */}
-                        <div style={{ background: "#f9f6e8", borderRadius: "14px", padding: "10px 20px", border: "1px solid #f0e68c", display: "inline-block" }}>
-                            <span style={{ fontSize: "14px", fontWeight: "700", color: "#8b7500" }}>🌱 씨앗 {status?.seeds || 0}개</span>
-                        </div>
-                    </div>
-                </section>
-
-                {/* 출석 체크 */}
-                <section style={{ ...card, flexShrink: 0 }}>
-                    <p style={{ margin: "0 0 12px", fontSize: "14px", fontWeight: "700", color: "#111" }}>📅 출석 체크</p>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <div>
-                            <p style={{ margin: "0 0 2px", fontSize: "13px", color: "#555" }}>
-                                연속 출석 <strong style={{ color: "#F4A7B9" }}>{attendance?.streak || 0}일</strong>
-                            </p>
-                            <p style={{ margin: 0, fontSize: "11px", color: "#aaa" }}>
-                                {attendance?.checked_today ? "오늘 출석 완료! ✅" : "오늘 아직 출석 안 했어요!"}
-                            </p>
-                        </div>
-                        <button onClick={handleAttendance} style={{
-                            padding: "10px 20px", borderRadius: "12px", border: "none", cursor: "pointer",
-                            background: attendance?.checked_today ? "#eee" : "#F4A7B9",
-                            color: attendance?.checked_today ? "#aaa" : "white",
-                            fontSize: "13px", fontWeight: "700", fontFamily: "inherit"
-                        }}>
-                            {attendance?.checked_today ? "완료 ✅" : "출석하기 🌱"}
-                        </button>
-                    </div>
-                </section>
-            </div>
-
-            {/* 상태 + 오늘 퀘스트 */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-
-                {/* 상태값 */}
-                <section style={{ ...card, flexShrink: 0 }}>
-                    <p style={{ margin: "0 0 14px", fontSize: "14px", fontWeight: "700", color: "#111" }}>💊 캐릭터 상태</p>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                        {[
-                            { label: "배고픔", value: status?.hunger ?? 0, color: "#ff9f43", emoji: "🍚" },
-                            { label: "기분", value: status?.mood ?? 0, color: "#54a0ff", emoji: "😊" },
-                        ].map(({ label, value, color, emoji }) => (
-                            <div key={label}>
-                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-                                    <span style={{ fontSize: "12px", color: "#555", fontWeight: "600" }}>{emoji} {label}</span>
-                                    <span style={{ fontSize: "12px", color: value < 30 ? "#e74c3c" : value < 60 ? "#f39c12" : color, fontWeight: "700" }}>
-                                        {value}/100 {value < 30 ? "😵" : value < 60 ? "😟" : "😊"}
-                                    </span>
-                                </div>
-                                <div style={{ background: "#f0f0f0", borderRadius: "999px", height: "10px", overflow: "hidden" }}>
-                                    <div style={{ background: value < 30 ? "#e74c3c" : value < 60 ? "#f39c12" : color, borderRadius: "999px", height: "100%", width: `${value}%`, transition: "width 0.5s" }} />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                    <p style={{ margin: "12px 0 0", fontSize: "11px", color: "#bbb", textAlign: "center" }}>
-                        상점에서 먹이/장난감으로 회복할 수 있어요!
-                    </p>
-                </section>
-
-                {/* 오늘 퀘스트 미리보기 */}
-                <section style={{ ...card, flex: 1 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
-                        <p style={{ margin: 0, fontSize: "14px", fontWeight: "700", color: "#111" }}>📋 오늘의 퀘스트</p>
-                        <button onClick={() => setActiveTab("quest")} style={{ background: "none", border: "none", fontSize: "12px", color: "#F4A7B9", cursor: "pointer", fontWeight: "700", fontFamily: "inherit" }}>
-                            전체보기 →
-                        </button>
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                        {[
-                            { key: "q_record", label: "소비 기록하기", emoji: "✏️", reward: 45 },
-                            { key: "q_check", label: "수입/지출 확인", emoji: "👀", reward: 36 },
-                            { key: "q_category", label: "카테고리 정리", emoji: "🗂️", reward: 20 },
-                            { key: "q_feed", label: "캐릭터 돌보기", emoji: "🍖", reward: 10 },
-                        ].map(({ key, label, emoji, reward }) => (
-                            <div key={key} style={{
-                                display: "flex", alignItems: "center", justifyContent: "space-between",
-                                background: quest?.[key] ? "#f0fff4" : "#fafafa",
-                                borderRadius: "12px", padding: "10px 14px",
-                                border: quest?.[key] ? "1px solid #b2dfdb" : "1px solid #f0f0f0"
+                {/* 왼쪽: 캐릭터 카드 + 출석 */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                    <section style={{ ...card, flex: 1 }}>
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", height: "100%" }}>
+                            {/* 캐릭터 */}
+                            <div style={{
+                                width: "130px", height: "130px", borderRadius: "50%",
+                                background: `${getStageColor(status?.stage)}33`,
+                                border: `4px solid ${getStageColor(status?.stage)}`,
+                                display: "flex", alignItems: "center", justifyContent: "center",
+                                fontSize: "66px", margin: "0 auto 12px", boxShadow: "0 8px 24px rgba(0,0,0,0.08)"
                             }}>
-                                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                    <span style={{ fontSize: "16px" }}>{emoji}</span>
-                                    <span style={{ fontSize: "12px", fontWeight: "600", color: quest?.[key] ? "#aaa" : "#333", textDecoration: quest?.[key] ? "line-through" : "none" }}>
-                                        {label}
-                                    </span>
-                                </div>
-                                <span style={{ fontSize: "11px", color: "#F4A7B9", fontWeight: "700" }}>🌱 {reward}</span>
+                                {getCharacterEmoji(status?.stage, status?.hunger, status?.mood)}
                             </div>
-                        ))}
+
+                            <p style={{ margin: "0 0 4px", fontSize: "18px", fontWeight: "800", color: "#333" }}>
+                                {status?.name || "MOA"}
+                            </p>
+                            <div style={{ display: "inline-flex", alignItems: "center", background: "#fff0f3", borderRadius: "20px", padding: "4px 14px", border: "1px solid #ffd9e2", marginBottom: "14px" }}>
+                                <span style={{ fontSize: "12px", fontWeight: "700", color: "#F4A7B9" }}>{status?.stage || "알"} 단계</span>
+                            </div>
+
+                            {/* 경험치 바 */}
+                            <div style={{ width: "100%", marginBottom: "12px" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "5px" }}>
+                                    <span style={{ fontSize: "11px", color: "#aaa" }}>경험치</span>
+                                    <span style={{ fontSize: "11px", color: "#aaa" }}>{status?.exp || 0} / {status?.stage_next_exp || 100}</span>
+                                </div>
+                                <div style={{ background: "#f0f0f0", borderRadius: "999px", height: "8px", overflow: "hidden" }}>
+                                    <div style={{ background: "linear-gradient(90deg, #F4A7B9, #ff6b9d)", borderRadius: "999px", height: "100%", width: `${getExpPercent(status?.exp, status?.stage)}%`, transition: "width 0.5s" }} />
+                                </div>
+                            </div>
+
+                            {/* 씨앗 */}
+                            <div style={{ background: "#f9f6e8", borderRadius: "12px", padding: "7px 16px", border: "1px solid #f0e68c", marginBottom: "16px" }}>
+                                <span style={{ fontSize: "13px", fontWeight: "700", color: "#8b7500" }}>🌱 씨앗 {status?.seeds || 0}개</span>
+                            </div>
+
+                            {/* 배고픔 / 기분 */}
+                            <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "10px" }}>
+                                {[
+                                    { label: "배고픔", value: status?.hunger ?? 0, color: "#ff9f43", emoji: "🍚" },
+                                    { label: "기분",   value: status?.mood   ?? 0, color: "#54a0ff", emoji: "😊" },
+                                ].map(({ label, value, color, emoji }) => (
+                                    <div key={label}>
+                                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "5px" }}>
+                                            <span style={{ fontSize: "12px", color: "#555", fontWeight: "600" }}>{emoji} {label}</span>
+                                            <span style={{ fontSize: "12px", fontWeight: "700", color: value < 30 ? "#e74c3c" : value < 60 ? "#f39c12" : color }}>
+                                                {value}/100 {value < 30 ? "😵" : value < 60 ? "😟" : "😊"}
+                                            </span>
+                                        </div>
+                                        <div style={{ background: "#f0f0f0", borderRadius: "999px", height: "9px", overflow: "hidden" }}>
+                                            <div style={{ background: value < 30 ? "#e74c3c" : value < 60 ? "#f39c12" : color, borderRadius: "999px", height: "100%", width: `${value}%`, transition: "width 0.5s" }} />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* 출석 체크 */}
+                    <section style={{ ...card, flexShrink: 0 }}>
+                        <p style={{ margin: "0 0 12px", fontSize: "14px", fontWeight: "700", color: "#111" }}>📅 출석 체크</p>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <div>
+                                <p style={{ margin: "0 0 2px", fontSize: "13px", color: "#555" }}>
+                                    연속 출석 <strong style={{ color: "#F4A7B9" }}>{attendance?.streak || 0}일</strong>
+                                </p>
+                                <p style={{ margin: 0, fontSize: "11px", color: "#aaa" }}>
+                                    {attendance?.checked_today ? "오늘 출석 완료! ✅" : "오늘 아직 출석 안 했어요!"}
+                                </p>
+                            </div>
+                            <button onClick={handleAttendance} style={{
+                                padding: "10px 20px", borderRadius: "12px", border: "none", cursor: "pointer",
+                                background: attendance?.checked_today ? "#eee" : "#F4A7B9",
+                                color: attendance?.checked_today ? "#aaa" : "white",
+                                fontSize: "13px", fontWeight: "700", fontFamily: "inherit"
+                            }}>
+                                {attendance?.checked_today ? "완료 ✅" : "출석하기 🌱"}
+                            </button>
+                        </div>
+                    </section>
+                </div>
+
+                {/* 오른쪽: 가방 (인벤토리) */}
+                <section style={{ ...card, flex: 1 }}>
+                    <p style={{ margin: "0 0 4px", fontSize: "15px", fontWeight: "700", color: "#111" }}>🎒 내 가방</p>
+                    <p style={{ margin: "0 0 16px", fontSize: "11px", color: "#aaa" }}>상점에서 구매한 아이템을 여기서 사용해봐요</p>
+
+                    <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "20px" }}>
+
+                        {/* 먹이 섹션 */}
+                        <div>
+                            <p style={{ margin: "0 0 10px", fontSize: "13px", fontWeight: "700", color: "#ff9f43" }}>🍖 먹이</p>
+                            {feedItems.length === 0 ? (
+                                <div style={{ background: "#fafafa", borderRadius: "14px", padding: "18px", textAlign: "center", border: "1px solid #f0f0f0" }}>
+                                    <p style={{ margin: "0 0 4px", fontSize: "13px", color: "#ccc" }}>먹이가 없어요!</p>
+                                    <button onClick={() => setActiveTab("shop")} style={{ background: "none", border: "none", fontSize: "12px", color: "#F4A7B9", cursor: "pointer", fontWeight: "700", fontFamily: "inherit" }}>
+                                        상점에서 구매하기 →
+                                    </button>
+                                </div>
+                            ) : (
+                                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                                    {feedItems.map(item => (
+                                        <div key={item.item_id} style={{ background: "#fafafa", borderRadius: "14px", padding: "12px 16px", border: "1px solid #f0f0f0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                                            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                                <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#fff0e6", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>🍖</div>
+                                                <div>
+                                                    <p style={{ margin: "0 0 2px", fontSize: "13px", fontWeight: "700", color: "#333" }}>{item.name}</p>
+                                                    <p style={{ margin: 0, fontSize: "11px", color: "#aaa" }}>{item.description} · <strong style={{ color: "#ff9f43" }}>{item.quantity}개</strong> 보유</p>
+                                                </div>
+                                            </div>
+                                            <button onClick={() => handleUseItem(item)} style={{
+                                                padding: "8px 16px", borderRadius: "10px", border: "none",
+                                                background: "#ff9f43", color: "white",
+                                                fontSize: "12px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap"
+                                            }}>먹이주기</button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* 장난감 섹션 */}
+                        <div>
+                            <p style={{ margin: "0 0 10px", fontSize: "13px", fontWeight: "700", color: "#54a0ff" }}>🎮 장난감</p>
+                            {toyItems.length === 0 ? (
+                                <div style={{ background: "#fafafa", borderRadius: "14px", padding: "18px", textAlign: "center", border: "1px solid #f0f0f0" }}>
+                                    <p style={{ margin: "0 0 4px", fontSize: "13px", color: "#ccc" }}>장난감이 없어요!</p>
+                                    <button onClick={() => setActiveTab("shop")} style={{ background: "none", border: "none", fontSize: "12px", color: "#F4A7B9", cursor: "pointer", fontWeight: "700", fontFamily: "inherit" }}>
+                                        상점에서 구매하기 →
+                                    </button>
+                                </div>
+                            ) : (
+                                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                                    {toyItems.map(item => (
+                                        <div key={item.item_id} style={{ background: "#fafafa", borderRadius: "14px", padding: "12px 16px", border: "1px solid #f0f0f0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                                            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                                <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#f0f0ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>🎮</div>
+                                                <div>
+                                                    <p style={{ margin: "0 0 2px", fontSize: "13px", fontWeight: "700", color: "#333" }}>{item.name}</p>
+                                                    <p style={{ margin: 0, fontSize: "11px", color: "#aaa" }}>{item.description} · <strong style={{ color: "#54a0ff" }}>{item.quantity}개</strong> 보유</p>
+                                                </div>
+                                            </div>
+                                            <button onClick={() => handleUseItem(item)} style={{
+                                                padding: "8px 16px", borderRadius: "10px", border: "none",
+                                                background: "#54a0ff", color: "white",
+                                                fontSize: "12px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap"
+                                            }}>놀아주기</button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </section>
             </div>
-        </div>
-    )
+        )
+    }
 
     // ── 탭: 퀘스트 ──────────────────────────────────
     const renderQuest = () => (
@@ -290,11 +348,11 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
                 <p style={{ margin: "0 0 16px", fontSize: "11px", color: "#aaa" }}>매일 자정에 초기화돼요</p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
                     {[
-                        { key: "q_record", type: "record", label: "오늘의 소비 기록", desc: "지출 1회 기록하기", emoji: "✏️", reward: 45, exp: 5 },
-                        { key: "q_check", type: "check", label: "수입/지출 확인", desc: "내역 화면 확인하기", emoji: "👀", reward: 36, exp: 0 },
-                        { key: "q_category", type: "category", label: "카테고리 정리", desc: "카테고리 선택해서 기록하기", emoji: "🗂️", reward: 20, exp: 5 },
-                        { key: "q_feed", type: "feed", label: "캐릭터 돌보기", desc: "먹이 주기 1회", emoji: "🍖", reward: 10, exp: 0 },
-                    ].map(({ key, type, label, desc, emoji, reward, exp }) => (
+                        { key: "q_record",   label: "오늘의 소비 기록", emoji: "✏️", reward: 45, exp: 5,  hint: "내역 추가에서 지출/수입을 기록하면 자동 달성!" },
+                        { key: "q_check",    label: "수입/지출 확인",   emoji: "👀", reward: 36, exp: 0,  hint: "📋 내역 탭을 방문하면 자동 달성!" },
+                        { key: "q_category", label: "카테고리 정리",    emoji: "🗂️", reward: 20, exp: 5,  hint: "카테고리를 선택해 내역을 기록하면 자동 달성!" },
+                        { key: "q_feed",     label: "캐릭터 돌보기",    emoji: "🍖", reward: 10, exp: 0,  hint: "🏠 거실에서 먹이주기 또는 놀아주기!" },
+                    ].map(({ key, label, emoji, reward, exp, hint }) => (
                         <div key={key} style={{
                             background: quest?.[key] ? "#f0fff4" : "white",
                             borderRadius: "16px", padding: "14px 16px",
@@ -306,20 +364,15 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
                                     {quest?.[key] ? "✅" : emoji}
                                 </div>
                                 <div>
-                                    <p style={{ margin: "0 0 2px", fontSize: "13px", fontWeight: "700", color: quest?.[key] ? "#aaa" : "#333", textDecoration: quest?.[key] ? "line-through" : "none" }}>{label}</p>
-                                    <p style={{ margin: 0, fontSize: "11px", color: "#bbb" }}>{desc}</p>
+                                    <p style={{ margin: "0 0 3px", fontSize: "13px", fontWeight: "700", color: quest?.[key] ? "#aaa" : "#333", textDecoration: quest?.[key] ? "line-through" : "none" }}>{label}</p>
+                                    <p style={{ margin: 0, fontSize: "11px", color: quest?.[key] ? "#b2dfdb" : "#bbb" }}>
+                                        {quest?.[key] ? "달성 완료! 🎉" : hint}
+                                    </p>
                                 </div>
                             </div>
                             <div style={{ textAlign: "right", display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "4px" }}>
-                                <span style={{ fontSize: "12px", color: "#F4A7B9", fontWeight: "700" }}>🌱 {reward}</span>
-                                {exp > 0 && <span style={{ fontSize: "11px", color: "#aaa" }}>+{exp} EXP</span>}
-                                {!quest?.[key] && (
-                                    <button onClick={() => handleQuest(type)} style={{
-                                        padding: "5px 12px", borderRadius: "8px", border: "none",
-                                        background: "#F4A7B9", color: "white", fontSize: "11px",
-                                        fontWeight: "700", cursor: "pointer", fontFamily: "inherit", marginTop: "2px"
-                                    }}>완료</button>
-                                )}
+                                <span style={{ fontSize: "12px", color: quest?.[key] ? "#b2dfdb" : "#F4A7B9", fontWeight: "700" }}>🌱 {reward}</span>
+                                {exp > 0 && <span style={{ fontSize: "11px", color: "#bbb" }}>+{exp} EXP</span>}
                             </div>
                         </div>
                     ))}
@@ -375,7 +428,10 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", flex: 1, minHeight: 0 }}>
                 <section style={{ ...card, flex: 1 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", flexShrink: 0 }}>
-                        <p style={{ margin: 0, fontSize: "15px", fontWeight: "700", color: "#111" }}>🍖 먹이 상점</p>
+                        <div>
+                            <p style={{ margin: "0 0 2px", fontSize: "15px", fontWeight: "700", color: "#111" }}>🍖 먹이 상점</p>
+                            <p style={{ margin: 0, fontSize: "11px", color: "#aaa" }}>구매하면 거실 가방에 들어가요</p>
+                        </div>
                         <div style={{ background: "#f9f6e8", borderRadius: "12px", padding: "6px 14px", border: "1px solid #f0e68c" }}>
                             <span style={{ fontSize: "13px", fontWeight: "700", color: "#8b7500" }}>🌱 {status?.seeds || 0}</span>
                         </div>
@@ -406,7 +462,10 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
 
                 <section style={{ ...card, flex: 1 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", flexShrink: 0 }}>
-                        <p style={{ margin: 0, fontSize: "15px", fontWeight: "700", color: "#111" }}>🎮 장난감 상점</p>
+                        <div>
+                            <p style={{ margin: "0 0 2px", fontSize: "15px", fontWeight: "700", color: "#111" }}>🎮 장난감 상점</p>
+                            <p style={{ margin: 0, fontSize: "11px", color: "#aaa" }}>구매하면 거실 가방에 들어가요</p>
+                        </div>
                         <div style={{ background: "#f9f6e8", borderRadius: "12px", padding: "6px 14px", border: "1px solid #f0e68c" }}>
                             <span style={{ fontSize: "13px", fontWeight: "700", color: "#8b7500" }}>🌱 {status?.seeds || 0}</span>
                         </div>
@@ -574,7 +633,7 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
                     </div>
                     <div style={{ display: "flex", gap: "8px" }}>
                         {[
-                            { key: "home", label: "🐷 홈" },
+                            { key: "home", label: "🏠 거실" },
                             { key: "quest", label: "📋 퀘스트" },
                             { key: "shop", label: "🛒 상점" },
                             { key: "achievement", label: "🏆 업적" },

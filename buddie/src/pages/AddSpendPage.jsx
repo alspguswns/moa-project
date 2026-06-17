@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { API } from "../config.js"
 
 const CATEGORIES = [
     { label: "식비", emoji: "🍚" },
@@ -27,7 +28,7 @@ const INCOME_CATEGORIES = [
     { label: "기타", emoji: "📦" },
 ]
 
-function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout, current }) {
+function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onChat, onGame, onLogout, current }) {
     const today = new Date()
     const nickname = localStorage.getItem("nickname") || "사용자"
     const [amount, setAmount] = useState("")
@@ -103,7 +104,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
         setError("")
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/expense/", {
+            const response = await fetch(`${API}/expense/`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -117,6 +118,17 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
             })
             const data = await response.json()
             if (response.ok) {
+                // 기록 퀘스트 자동 완료 (fire-and-forget)
+                const qId = parseInt(userId)
+                fetch(`${API}/game/quest/${qId}`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ quest_type: "record" })
+                }).catch(() => {})
+                fetch(`${API}/game/quest/${qId}`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ quest_type: "category" })
+                }).catch(() => {})
+
                 // 연속 입력 여부를 물어보는 confirm 모달 표출
                 setModalConfig({
                     isOpen: true,

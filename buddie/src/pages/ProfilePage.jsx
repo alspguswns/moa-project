@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { API } from "../config.js"
 
 function ProfilePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onProfile, onBack, onLogout, current }) {
     const [nickname, setNickname] = useState(localStorage.getItem("nickname") || "")
@@ -35,7 +36,7 @@ function ProfilePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onProf
         const userId = localStorage.getItem("user_id")
         const token = localStorage.getItem("token")
         try {
-            const res = await fetch("http://127.0.0.1:8000/auth/change-password", {
+            const res = await fetch(`${API}/auth/change-password`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                 body: JSON.stringify({ current_password: currentPw, new_password: newPw })

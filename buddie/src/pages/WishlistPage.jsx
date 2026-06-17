@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { API } from "../config.js"
 
 // 카테고리별 우선순위 배지 설정
 const PRIORITY_STYLES = {
@@ -31,7 +32,7 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
             return
         }
         setLoading(true)
-        fetch(`http://127.0.0.1:8000/wishlist/${userId}`)
+        fetch(`${API}/wishlist/${userId}`)
             .then(res => res.json())
             .then(data => {
                 setItems(Array.isArray(data) ? data : [])
@@ -67,7 +68,7 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
         }
 
         try {
-            const res = await fetch("http://127.0.0.1:8000/wishlist/", {
+            const res = await fetch(`${API}/wishlist/`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -118,7 +119,7 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
 
     const executeDelete = async (id) => {
         try {
-            const res = await fetch(`http://127.0.0.1:8000/wishlist/${id}`, { method: "DELETE" })
+            const res = await fetch(`${API}/wishlist/${id}`, { method: "DELETE" })
             if (res.ok) {
                 setItems(prev => prev.filter(item => item.id !== id))
                 setModalConfig({

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react"
+import { API } from "../config.js"
 
 const CATEGORY_EMOJI = {
     "식비": "🍚", "카페": "☕", "교통": "🚌", "쇼핑": "🛍️",
@@ -47,10 +48,16 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
     useEffect(() => {
         const userId = localStorage.getItem("user_id")
         if (!userId) return
-        fetch(`http://127.0.0.1:8000/expense/${userId}`)
+        fetch(`${API}/expense/${userId}`)
             .then(res => res.json())
             .then(data => setTransactions(Array.isArray(data) ? data : []))
             .catch(e => console.error(e))
+
+        // 내역 화면 방문 퀘스트 자동 완료 (fire-and-forget)
+        fetch(`${API}/game/quest/${userId}`, {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ quest_type: "check" })
+        }).catch(() => {})
     }, [])
 
     useEffect(() => {
@@ -147,7 +154,7 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
 
     const executeDelete = async (id) => {
         try {
-            const res = await fetch(`http://127.0.0.1:8000/expense/${id}`, { method: "DELETE" })
+            const res = await fetch(`${API}/expense/${id}`, { method: "DELETE" })
             if (res.ok) {
                 setTransactions(prev => prev.filter(t => t.id !== id))
                 setEditItem(null)
@@ -173,7 +180,7 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
         const rawAmount = editItem.amountStr.replace(/,/g, "")
         if (!rawAmount) return
         try {
-            const res = await fetch(`http://127.0.0.1:8000/expense/${editItem.id}`, {
+            const res = await fetch(`${API}/expense/${editItem.id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ type: editItem.type, amount: parseInt(rawAmount), category: editItem.category, memo: editItem.memo, date: editItem.date })

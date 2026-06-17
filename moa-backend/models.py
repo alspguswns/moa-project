@@ -86,7 +86,15 @@ class ShopItem(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     item_type = Column(String)   # feed / toy / background
-    effect_type = Column(String) # hunger / mood
+    effect_type = Column(String) # hunger / mood / both
     effect_value = Column(Integer)
     price = Column(Integer)
     description = Column(String, default="")
+
+class Inventory(Base):
+    __tablename__ = "inventory"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer)
+    item_id = Column(Integer)    # ShopItem.id
+    quantity = Column(Integer, default=0)

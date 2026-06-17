@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { API } from "../config.js"
 
 const CATEGORY_EMOJI = {
     "식비": "🍚", "카페": "☕", "교통": "🚌", "쇼핑": "🛍️",
@@ -31,7 +32,7 @@ function AnalysisPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
     useEffect(() => {
         const userId = localStorage.getItem("user_id")
         if (!userId) { setLoading(false); return }
-        fetch(`http://127.0.0.1:8000/ai/${userId}`)
+        fetch(`${API}/ai/${userId}`)
             .then(res => res.json())
             .then(res => { setData(res); setLoading(false) })
             .catch(() => setLoading(false))

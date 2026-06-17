@@ -38,8 +38,9 @@ function App() {
         onAnalysis: () => goTo("analysis"),
         onWishlist: () => goTo("wishlist"),
         onChat: () => goTo("chat"),
-        onProfile: () => goTo("profile"),  // ← 추가
+        onProfile: () => goTo("profile"),
         onGame: () => goTo("game"),
+        onLogout: handleLogout,
     }
 
     return (
