@@ -20,7 +20,7 @@ function BottomNav({ current, onHome, onHistory, onCalendar, onAnalysis, onWishl
                 <button key={item.key} onClick={item.onClick} style={{
                     background: "none", border: "none", cursor: "pointer",
                     fontSize: "11px",
-                    color: current === item.key ? "#F4A7B9" : "#aaa",
+                    color: current === item.key ? "var(--moa-primary)" : "#aaa",
                     fontFamily: "'GriounPolice', cursive"
                 }}>
                     {item.label}

@@ -45,6 +45,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
         `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`
     )
     const [showCal, setShowCal] = useState(false)
+    const [receiptLoading, setReceiptLoading] = useState(false)
 
     // 알림용 커스텀 모달 상태 관리
     const [modalConfig, setModalConfig] = useState({
@@ -93,6 +94,36 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
         const d = new Date(dateStr + "T00:00:00")
         const dayNames = ["일", "월", "화", "수", "목", "금", "토"]
         return `${d.getMonth() + 1}월 ${d.getDate()}일 ${dayNames[d.getDay()]}요일`
+    }
+
+    const handleReceiptUpload = async (e) => {
+        const file = e.target.files[0]
+        if (!file) return
+        setReceiptLoading(true)
+        try {
+            const formData = new FormData()
+            formData.append("file", file)
+            const API_URL = localStorage.getItem("api_url") || "http://127.0.0.1:8000"
+            const res = await fetch(`${API_URL}/ai/receipt`, {
+                method: "POST",
+                body: formData
+            })
+            const data = await res.json()
+            if (data.success && data.data) {
+                const { date, amount, category, memo } = data.data
+                if (date) setSelectedDate(date)
+                if (amount) setAmount(amount.toLocaleString())
+                if (category) setCategory(category)
+                if (memo) setMemo(memo)
+                setType("지출")
+            } else {
+                setError("영수증 분석에 실패했어요! 다시 시도해줘요.")
+            }
+        } catch (err) {
+            setError("서버 연결에 실패했어요!")
+        }
+        setReceiptLoading(false)
+        e.target.value = ""
     }
 
     async function handleSave() {
@@ -160,8 +191,8 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
     }
 
     // 사용자의 요청대로 색상 톤을 시그니처 핑크로 전면 통일
-    const accentColor = "#F4A7B9"
-    const accentBg = "#fff0f3"
+    const accentColor = "var(--moa-primary)"
+    const accentBg = "var(--moa-light)"
 
     const navItems = [
         { key: "main", icon: "🏠", onClick: onHome },
@@ -194,9 +225,9 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
             height: isMobile ? "auto" : "100vh", minHeight: "100vh",
             width: "100vw",
             fontFamily: "'GriounPolice', cursive",
-            backgroundImage: `linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px)`,
+            backgroundImage: `linear-gradient(var(--moa-grid) 1px, transparent 1px), linear-gradient(90deg, var(--moa-grid) 1px, transparent 1px)`,
             backgroundSize: "28px 28px",
-            backgroundColor: "#f5f5f5",
+            backgroundColor: "var(--moa-bg)",
             overflow: isMobile ? "auto" : "hidden",
             boxSizing: "border-box"
         }}>
@@ -217,7 +248,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
                     backdropFilter: "blur(2px)"
                 }}>
                     <div style={{
-                        background: "white",
+                        background: "var(--moa-bg-card)",
                         borderRadius: "20px",
                         padding: "24px",
                         width: "320px",
@@ -226,7 +257,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
                         border: `1.5px solid ${accentColor}`
                     }}>
                         <span style={{ fontSize: "36px", display: "block", marginBottom: "12px" }}>🐷</span>
-                        <p style={{ margin: "0 0 20px", fontSize: "15px", fontWeight: "600", color: "#333", lineHeight: "1.5", whiteSpace: "pre-line" }}>
+                        <p style={{ margin: "0 0 20px", fontSize: "15px", fontWeight: "600", color: "var(--moa-text)", lineHeight: "1.5", whiteSpace: "pre-line" }}>
                             {modalConfig.message}
                         </p>
                         <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
@@ -249,7 +280,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
                                             fontSize: "13px",
                                             cursor: "pointer",
                                             fontWeight: "600",
-                                            color: "#555",
+                                            color: "var(--moa-text)",
                                             fontFamily: "inherit"
                                         }}
                                     >
@@ -309,7 +340,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
                 left: 0,
                 width: "100%",
                 height: "64px",
-                background: "white",
+                background: "var(--moa-bg-card)",
                 borderBottom: "1px solid #eee",
                 zIndex: 200,
                 display: "flex",
@@ -320,16 +351,20 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
             }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }} onClick={onHome}>
                     <span style={{ fontSize: "28px" }}>🐷</span>
-                    <span style={{ fontSize: "22px", fontWeight: "700", color: "#F4A7B9" }}>MOA</span>
+                    <span style={{ fontSize: "22px", fontWeight: "700", color: "var(--moa-primary)" }}>MOA</span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
                     <span style={{ fontSize: "20px", cursor: "pointer" }}>🔔</span>
                     <div style={{ display: "flex", alignItems: "center", gap: "8px", background: "#f5f5f5", borderRadius: "20px", padding: "6px 12px" }}>
-                        <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "#F4A7B9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", color: "white" }}>
-                            {nickname[0]}
+                        <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "var(--moa-primary)", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", color: "white" }}>
+                            {localStorage.getItem("profileImg") ? (
+        <img src={localStorage.getItem("profileImg")} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }} onError={e => { e.target.style.display = "none" }} />
+    ) : (
+        nickname[0]
+    )}
                         </div>
-                        <span style={{ fontSize: "13px", color: "#333", fontWeight: "600" }}>{nickname}</span>
-                        <span style={{ fontSize: "11px", color: "#aaa" }}>▾</span>
+                        <span style={{ fontSize: "13px", color: "var(--moa-text)", fontWeight: "600" }}>{nickname}</span>
+                        <span style={{ fontSize: "11px", color: "var(--moa-text-sub)" }}>▾</span>
                     </div>
                 </div>
             </div>
@@ -342,7 +377,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
                 left: 0,
                 width: "72px",
                 height: "calc(100vh - 64px)",
-                background: "white",
+                background: "var(--moa-bg-card)",
                 borderRight: "1px solid #eee",
                 display: "flex",
                 flexDirection: "column",
@@ -365,8 +400,8 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
                             justifyContent: "center",
                             fontSize: "22px",
                             cursor: "pointer",
-                            background: current === item.key ? "#fff0f3" : "transparent",
-                            border: current === item.key ? "1.5px solid #F4A7B9" : "1.5px solid transparent",
+                            background: current === item.key ? "var(--moa-light)" : "transparent",
+                            border: current === item.key ? "1.5px solid var(--moa-primary)" : "1.5px solid transparent",
                             transition: "all 0.2s"
                         }}
                     >
@@ -409,7 +444,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
                             border: "none",
                             fontSize: "24px",
                             cursor: "pointer",
-                            color: "#888",
+                            color: "var(--moa-text-sub)",
                             padding: "4px 8px",
                             display: "flex",
                             alignItems: "center"
@@ -417,14 +452,14 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
                     >
                         ←
                     </button>
-                    <span style={{ fontSize: "20px", fontWeight: "700", color: "#333" }}>내역 추가</span>
+                    <span style={{ fontSize: "20px", fontWeight: "700", color: "var(--moa-text)" }}>내역 추가</span>
                 </div>
 
                 {/* 중앙 폼 메인 카드 */}
                 <div style={{
                     width: "100%",
                     maxWidth: "840px",
-                    background: "white",
+                    background: "var(--moa-bg-card)",
                     borderRadius: "24px",
                     padding: "32px 40px",
                     boxShadow: "0 8px 24px rgba(0,0,0,0.06)",
@@ -476,7 +511,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
 
                     {/* 날짜 선택 */}
                     <div style={{ position: "relative" }}>
-                        <label style={{ fontSize: "12px", color: "#888", display: "block", marginBottom: "6px" }}>날짜</label>
+                        <label style={{ fontSize: "12px", color: "var(--moa-text-sub)", display: "block", marginBottom: "6px" }}>날짜</label>
                         <button
                             onClick={() => setShowCal(!showCal)}
                             style={{
@@ -486,7 +521,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
                                 border: "1.5px solid #eee",
                                 background: "#fafafa",
                                 fontSize: "14.5px",
-                                color: "#333",
+                                color: "var(--moa-text)",
                                 textAlign: "left",
                                 cursor: "pointer",
                                 fontFamily: "inherit",
@@ -510,7 +545,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
                                 left: 0,
                                 width: "100%",
                                 maxWidth: "340px",
-                                background: "white",
+                                background: "var(--moa-bg-card)",
                                 borderRadius: "16px",
                                 padding: "16px",
                                 marginTop: "8px",
@@ -519,15 +554,15 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
                                 zIndex: 10
                             }}>
                                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-                                    <button onClick={handleCalPrev} style={{ background: "none", border: "none", fontSize: "18px", cursor: "pointer", color: "#666" }}>‹</button>
-                                    <span style={{ fontSize: "14px", fontWeight: "700", color: "#333" }}>{calYear}년 {calMonth + 1}월</span>
-                                    <button onClick={handleCalNext} style={{ background: "none", border: "none", fontSize: "18px", cursor: "pointer", color: "#666" }}>›</button>
+                                    <button onClick={handleCalPrev} style={{ background: "none", border: "none", fontSize: "18px", cursor: "pointer", color: "var(--moa-text-sub)" }}>‹</button>
+                                    <span style={{ fontSize: "14px", fontWeight: "700", color: "var(--moa-text)" }}>{calYear}년 {calMonth + 1}월</span>
+                                    <button onClick={handleCalNext} style={{ background: "none", border: "none", fontSize: "18px", cursor: "pointer", color: "var(--moa-text-sub)" }}>›</button>
                                 </div>
                                 <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", marginBottom: "6px" }}>
                                     {["일", "월", "화", "수", "목", "금", "토"].map((d, i) => (
                                         <div key={d} style={{
                                             textAlign: "center", fontSize: "11px",
-                                            color: i === 0 ? "#F4A7B9" : i === 6 ? "#7F77DD" : "#bbb",
+                                            color: i === 0 ? "var(--moa-primary)" : i === 6 ? "#7F77DD" : "#bbb",
                                             padding: "4px 0"
                                         }}>{d}</div>
                                     ))}
@@ -548,7 +583,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
                                                 <span style={{
                                                     fontSize: "13px",
                                                     fontWeight: isSelected || isToday ? "700" : "400",
-                                                    color: isSelected ? "white" : !cell.cur ? "#ddd" : isToday ? accentColor : col === 0 ? "#F4A7B9" : col === 6 ? "#7F77DD" : "#333"
+                                                    color: isSelected ? "white" : !cell.cur ? "#ddd" : isToday ? accentColor : col === 0 ? "var(--moa-primary)" : col === 6 ? "#7F77DD" : "#333"
                                                 }}>
                                                     {cell.date}
                                                 </span>
@@ -562,7 +597,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
 
                     {/* 금액 입력 */}
                     <div>
-                        <label style={{ fontSize: "12px", color: "#888", display: "block", marginBottom: "6px" }}>금액</label>
+                        <label style={{ fontSize: "12px", color: "var(--moa-text-sub)", display: "block", marginBottom: "6px" }}>금액</label>
                         <div style={{ position: "relative" }}>
                             <input
                                 type="text"
@@ -578,7 +613,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
                                     fontSize: "16px",
                                     boxSizing: "border-box",
                                     fontFamily: "inherit",
-                                    color: "#333",
+                                    color: "var(--moa-text)",
                                     outline: "none",
                                     background: "#fafafa",
                                     transition: "border-color 0.2s"
@@ -586,13 +621,13 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
                                 onFocus={e => e.currentTarget.style.borderColor = accentColor}
                                 onBlur={e => e.currentTarget.style.borderColor = "#eee"}
                             />
-                            <span style={{ position: "absolute", right: "16px", top: "50%", transform: "translateY(-50%)", fontSize: "15px", color: "#aaa", fontWeight: "600" }}>원</span>
+                            <span style={{ position: "absolute", right: "16px", top: "50%", transform: "translateY(-50%)", fontSize: "15px", color: "var(--moa-text-sub)", fontWeight: "600" }}>원</span>
                         </div>
                     </div>
 
                     {/* 카테고리 (2행 5열) */}
                     <div>
-                        <label style={{ fontSize: "12px", color: "#888", display: "block", marginBottom: "8px" }}>카테고리</label>
+                        <label style={{ fontSize: "12px", color: "var(--moa-text-sub)", display: "block", marginBottom: "8px" }}>카테고리</label>
                         <div style={{
                             display: "grid",
                             gridTemplateColumns: "repeat(5, 1fr)",
@@ -641,10 +676,10 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
                         border: "1px solid #eee"
                     }}>
                         <div>
-                            <p style={{ margin: "0 0 2px", fontSize: "13.5px", color: "#333", fontWeight: "600" }}>
+                            <p style={{ margin: "0 0 2px", fontSize: "13.5px", color: "var(--moa-text)", fontWeight: "600" }}>
                                 {type === "지출" ? "정기 지출로 설정" : "정기 수입으로 설정"}
                             </p>
-                            <p style={{ margin: 0, fontSize: "11px", color: "#999" }}>매달 같은 날짜에 자동으로 추가돼요</p>
+                            <p style={{ margin: 0, fontSize: "11px", color: "var(--moa-text-sub)" }}>매달 같은 날짜에 자동으로 추가돼요</p>
                         </div>
                         <div onClick={() => setIsRegular(prev => !prev)} style={{
                             width: "44px", height: "24px", borderRadius: "12px",
@@ -654,7 +689,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
                         }}>
                             <div style={{
                                 width: "20px", height: "20px", borderRadius: "50%",
-                                background: "white", position: "absolute",
+                                background: "var(--moa-bg-card)", position: "absolute",
                                 top: "2px", left: isRegular ? "22px" : "2px",
                                 transition: "left 0.2s",
                                 boxShadow: "0 1px 4px rgba(0,0,0,0.15)"
@@ -664,7 +699,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
 
                     {/* 메모 입력 */}
                     <div>
-                        <label style={{ fontSize: "12px", color: "#888", display: "block", marginBottom: "6px" }}>메모</label>
+                        <label style={{ fontSize: "12px", color: "var(--moa-text-sub)", display: "block", marginBottom: "6px" }}>메모</label>
                         <input
                             type="text"
                             placeholder={type === "수입" ? "(메모)" : "(메모)"}
@@ -678,7 +713,7 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
                                 fontSize: "14.5px",
                                 boxSizing: "border-box",
                                 fontFamily: "inherit",
-                                color: "#333",
+                                color: "var(--moa-text)",
                                 outline: "none",
                                 background: "#fafafa",
                                 transition: "border-color 0.2s"
@@ -688,9 +723,30 @@ function AddSpendPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCha
                         />
                     </div>
 
+                    {/* 영수증 자동 입력 */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        <label htmlFor="receipt-upload" style={{
+                            flex: 1, padding: "14px", borderRadius: "14px",
+                            border: `1.5px dashed ${accentColor}`, background: accentBg,
+                            color: accentColor, fontSize: "14px", fontWeight: "700",
+                            cursor: receiptLoading ? "not-allowed" : "pointer",
+                            textAlign: "center", display: "block", fontFamily: "inherit"
+                        }}>
+                            {receiptLoading ? "🔍 분석 중..." : "📷 영수증으로 자동 입력"}
+                        </label>
+                        <input
+                            id="receipt-upload"
+                            type="file"
+                            accept="image/*"
+                            style={{ display: "none" }}
+                            onChange={handleReceiptUpload}
+                            disabled={receiptLoading}
+                        />
+                    </div>
+
                     {/* 에러 메세지 배너 */}
                     {error && (
-                        <p style={{ color: "#F4A7B9", fontSize: "12.5px", margin: "0", textAlign: "center", fontWeight: "700" }}>⚠️ {error}</p>
+                        <p style={{ color: "var(--moa-primary)", fontSize: "12.5px", margin: "0", textAlign: "center", fontWeight: "700" }}>⚠️ {error}</p>
                     )}
 
                     {/* 저장하기 버튼 */}

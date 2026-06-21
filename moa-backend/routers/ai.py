@@ -116,3 +116,50 @@ def analyze(user_id: int, db: Session = Depends(get_db)):
         "consumer_type": consumer_type,
         "wish_prediction": wish_prediction
     }
+
+from fastapi import UploadFile, File
+import base64, json
+
+@router.post("/receipt")
+async def analyze_receipt(file: UploadFile = File(...)):
+    image_data = await file.read()
+    base64_image = base64.b64encode(image_data).decode("utf-8")
+    ext = file.filename.split(".")[-1].lower()
+    media_type = "image/png" if ext == "png" else "image/jpeg"
+
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": """이 영수증 이미지를 분석해서 아래 JSON 형식으로만 반환해줘. 다른 말은 절대 하지 마.
+{
+  "date": "YYYY-MM-DD",
+  "amount": 숫자만,
+  "category": "식비/카페/교통/쇼핑/의료/문화/운동/미용/구독/기타 중 하나",
+  "memo": "가게명 또는 품목명"
+}
+날짜가 없으면 오늘 날짜, 금액이 여러 개면 합계, 카테고리는 가장 적절한 것으로."""
+                    },
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:{media_type};base64,{base64_image}"
+                        }
+                    }
+                ]
+            }
+        ],
+        max_tokens=200
+    )
+
+    try:
+        text = response.choices[0].message.content
+        text = text.replace("```json", "").replace("```", "").strip()
+        result = json.loads(text)
+        return {"success": True, "data": result}
+    except:
+        return {"success": False, "data": None, "raw": response.choices[0].message.content}

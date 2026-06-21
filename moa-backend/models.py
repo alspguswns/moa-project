@@ -8,7 +8,8 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     password = Column(String)
     nickname = Column(String)
-    seeds = Column(Integer, default=0)  # 씨앗 재화
+    seeds = Column(Integer, default=0)
+    invite_code = Column(String, unique=True, nullable=True)
 
 class Transaction(Base):
     __tablename__ = "transactions"
@@ -96,5 +97,13 @@ class Inventory(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer)
-    item_id = Column(Integer)    # ShopItem.id
+    item_id = Column(Integer)
     quantity = Column(Integer, default=0)
+
+class Friendship(Base):
+    __tablename__ = "friendships"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer)
+    friend_id = Column(Integer)
+    created_at = Column(String, default="")

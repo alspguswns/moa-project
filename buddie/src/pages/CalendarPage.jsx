@@ -66,7 +66,7 @@ function CalendarPage({ onHome, onHistory, onCalendar, onAnalysis, onWishlist, o
             minHeight: "100vh",
             backgroundImage: `linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px)`,
             backgroundSize: "28px 28px",
-            backgroundColor: "#f5f5f5",
+            backgroundColor: "var(--moa-bg)",
             padding: "24px 20px",
             boxSizing: "border-box",
             fontFamily: "'GriounPolice', cursive"
@@ -89,7 +89,7 @@ function CalendarPage({ onHome, onHistory, onCalendar, onAnalysis, onWishlist, o
                     {days.map((day, i) => (
                         <div key={day} style={{
                             textAlign: "center", fontSize: "12px",
-                            color: i === 0 ? "#F4A7B9" : i === 6 ? "#7F77DD" : "#aaa",
+                            color: i === 0 ? "var(--moa-primary)" : i === 6 ? "#7F77DD" : "#aaa",
                             padding: "4px 0"
                         }}>
                             {day}
@@ -113,14 +113,14 @@ function CalendarPage({ onHome, onHistory, onCalendar, onAnalysis, onWishlist, o
                                 borderRadius: "8px",
                                 fontSize: "13px",
                                 cursor: "pointer",
-                                background: isSelected ? "#7F77DD" : isToday ? "#F4A7B9" : "transparent",
-                                color: isSelected ? "white" : isToday ? "white" : dayOfWeek === 0 ? "#F4A7B9" : dayOfWeek === 6 ? "#7F77DD" : "#333"
+                                background: isSelected ? "#7F77DD" : isToday ? "var(--moa-primary)" : "transparent",
+                                color: isSelected ? "white" : isToday ? "white" : dayOfWeek === 0 ? "var(--moa-primary)" : dayOfWeek === 6 ? "#7F77DD" : "#333"
                             }}>
                                 <div>{date}</div>
                                 {expense && (
                                     <div style={{
                                         fontSize: "8px",
-                                        color: isSelected || isToday ? "white" : "#F4A7B9",
+                                        color: isSelected || isToday ? "white" : "var(--moa-primary)",
                                         marginTop: "2px"
                                     }}>
                                         -{expense.toLocaleString()}
@@ -134,32 +134,32 @@ function CalendarPage({ onHome, onHistory, onCalendar, onAnalysis, onWishlist, o
                 {/* 선택된 날짜 내역 */}
                 {selectedDate && (
                     <div>
-                        <p style={{ fontSize: "14px", fontWeight: "600", marginBottom: "12px", color: "#555" }}>
+                        <p style={{ fontSize: "14px", fontWeight: "600", marginBottom: "12px", color: "var(--moa-text)" }}>
                             📋 {month + 1}월 {selectedDate}일 내역
                         </p>
                         {selectedTransactions.length === 0 ? (
                             <div style={{
-                                background: "white", borderRadius: "14px",
+                                background: "var(--moa-bg-card)", borderRadius: "14px",
                                 padding: "24px", textAlign: "center",
                                 boxShadow: "0 2px 8px rgba(0,0,0,0.06)"
                             }}>
-                                <p style={{ margin: 0, color: "#aaa", fontSize: "13px" }}>이날은 내역이 없어요!</p>
+                                <p style={{ margin: 0, color: "var(--moa-text-sub)", fontSize: "13px" }}>이날은 내역이 없어요!</p>
                             </div>
                         ) : (
                             selectedTransactions.map(item => (
                                 <div key={item.id} style={{
-                                    background: "white", borderRadius: "14px",
+                                    background: "var(--moa-bg-card)", borderRadius: "14px",
                                     padding: "14px 16px", marginBottom: "8px",
                                     boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
                                     display: "flex", justifyContent: "space-between", alignItems: "center"
                                 }}>
                                     <div>
                                         <p style={{ margin: "0 0 4px", fontSize: "14px", fontWeight: "500" }}>{item.memo || "메모 없음"}</p>
-                                        <p style={{ margin: 0, fontSize: "12px", color: "#aaa" }}>{item.category}</p>
+                                        <p style={{ margin: 0, fontSize: "12px", color: "var(--moa-text-sub)" }}>{item.category}</p>
                                     </div>
                                     <p style={{
                                         margin: 0, fontSize: "15px", fontWeight: "600",
-                                        color: item.type === "지출" ? "#F4A7B9" : "#7F77DD"
+                                        color: item.type === "지출" ? "var(--moa-primary)" : "#7F77DD"
                                     }}>
                                         {item.type === "지출" ? "-" : "+"}{item.amount.toLocaleString()}원
                                     </p>

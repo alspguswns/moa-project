@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { API } from "../config.js"
 import MobileBottomNav from "../components/MobileBottomNav"
 
-function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout, current, isMobile }) {
+function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onGame, onShop, onFriends, onLogout, current, isMobile }) {
     const userId = parseInt(localStorage.getItem("user_id"))
     const nickname = localStorage.getItem("nickname") || "사용자"
 
@@ -24,6 +24,9 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
         { key: "analysis", icon: "📊", onClick: onAnalysis },
         { key: "wishlist", icon: "🛍️", onClick: onWishlist },
         { key: "chat", icon: "💬", onClick: onChat },
+        { key: "game", icon: "🎮", onClick: onGame },
+        { key: "shop", icon: "🎨", onClick: onShop },
+        { key: "friends", icon: "👥", onClick: onFriends },
         { key: "logout", icon: "🚪", onClick: () => setModalConfig({
                 isOpen: true, type: "confirm", message: "정말로 로그아웃 하시겠습니까? 🐷",
                 onConfirm: () => { setModalConfig({ isOpen: false }); onLogout() }
@@ -163,7 +166,7 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
     }
 
     const getStageColor = (stage) => {
-        return { "알": "#ddd", "유체": "#ffe4b5", "아성체": "#ffd9e2", "성체": "#F4A7B9" }[stage] || "#F4A7B9"
+        return { "알": "#ddd", "유체": "#ffe4b5", "아성체": "var(--moa-border)", "성체": "var(--moa-primary)" }[stage] || "var(--moa-primary)"
     }
 
     const getExpPercent = (exp, stage) => {
@@ -196,21 +199,21 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
                                 {getCharacterEmoji(status?.stage, status?.hunger, status?.mood)}
                             </div>
 
-                            <p style={{ margin: "0 0 4px", fontSize: "18px", fontWeight: "800", color: "#333" }}>
+                            <p style={{ margin: "0 0 4px", fontSize: "18px", fontWeight: "800", color: "var(--moa-text)" }}>
                                 {status?.name || "MOA"}
                             </p>
-                            <div style={{ display: "inline-flex", alignItems: "center", background: "#fff0f3", borderRadius: "20px", padding: "4px 14px", border: "1px solid #ffd9e2", marginBottom: "14px" }}>
-                                <span style={{ fontSize: "12px", fontWeight: "700", color: "#F4A7B9" }}>{status?.stage || "알"} 단계</span>
+                            <div style={{ display: "inline-flex", alignItems: "center", background: "var(--moa-light)", borderRadius: "20px", padding: "4px 14px", border: "1px solid var(--moa-border)", marginBottom: "14px" }}>
+                                <span style={{ fontSize: "12px", fontWeight: "700", color: "var(--moa-primary)" }}>{status?.stage || "알"} 단계</span>
                             </div>
 
                             {/* 경험치 바 */}
                             <div style={{ width: "100%", marginBottom: "12px" }}>
                                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "5px" }}>
-                                    <span style={{ fontSize: "11px", color: "#aaa" }}>경험치</span>
-                                    <span style={{ fontSize: "11px", color: "#aaa" }}>{status?.exp || 0} / {status?.stage_next_exp || 100}</span>
+                                    <span style={{ fontSize: "11px", color: "var(--moa-text-sub)" }}>경험치</span>
+                                    <span style={{ fontSize: "11px", color: "var(--moa-text-sub)" }}>{status?.exp || 0} / {status?.stage_next_exp || 100}</span>
                                 </div>
                                 <div style={{ background: "#f0f0f0", borderRadius: "999px", height: "8px", overflow: "hidden" }}>
-                                    <div style={{ background: "linear-gradient(90deg, #F4A7B9, #ff6b9d)", borderRadius: "999px", height: "100%", width: `${getExpPercent(status?.exp, status?.stage)}%`, transition: "width 0.5s" }} />
+                                    <div style={{ background: "linear-gradient(90deg, var(--moa-primary), #ff6b9d)", borderRadius: "999px", height: "100%", width: `${getExpPercent(status?.exp, status?.stage)}%`, transition: "width 0.5s" }} />
                                 </div>
                             </div>
 
@@ -227,7 +230,7 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
                                 ].map(({ label, value, color, emoji }) => (
                                     <div key={label}>
                                         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "5px" }}>
-                                            <span style={{ fontSize: "12px", color: "#555", fontWeight: "600" }}>{emoji} {label}</span>
+                                            <span style={{ fontSize: "12px", color: "var(--moa-text)", fontWeight: "600" }}>{emoji} {label}</span>
                                             <span style={{ fontSize: "12px", fontWeight: "700", color: value < 30 ? "#e74c3c" : value < 60 ? "#f39c12" : color }}>
                                                 {value}/100 {value < 30 ? "😵" : value < 60 ? "😟" : "😊"}
                                             </span>
@@ -243,19 +246,19 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
 
                     {/* 출석 체크 */}
                     <section style={{ ...card, flexShrink: 0 }}>
-                        <p style={{ margin: "0 0 12px", fontSize: "14px", fontWeight: "700", color: "#111" }}>📅 출석 체크</p>
+                        <p style={{ margin: "0 0 12px", fontSize: "14px", fontWeight: "700", color: "var(--moa-text)" }}>📅 출석 체크</p>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                             <div>
-                                <p style={{ margin: "0 0 2px", fontSize: "13px", color: "#555" }}>
-                                    연속 출석 <strong style={{ color: "#F4A7B9" }}>{attendance?.streak || 0}일</strong>
+                                <p style={{ margin: "0 0 2px", fontSize: "13px", color: "var(--moa-text)" }}>
+                                    연속 출석 <strong style={{ color: "var(--moa-primary)" }}>{attendance?.streak || 0}일</strong>
                                 </p>
-                                <p style={{ margin: 0, fontSize: "11px", color: "#aaa" }}>
+                                <p style={{ margin: 0, fontSize: "11px", color: "var(--moa-text-sub)" }}>
                                     {attendance?.checked_today ? "오늘 출석 완료! ✅" : "오늘 아직 출석 안 했어요!"}
                                 </p>
                             </div>
                             <button onClick={handleAttendance} style={{
                                 padding: "10px 20px", borderRadius: "12px", border: "none", cursor: "pointer",
-                                background: attendance?.checked_today ? "#eee" : "#F4A7B9",
+                                background: attendance?.checked_today ? "#eee" : "var(--moa-primary)",
                                 color: attendance?.checked_today ? "#aaa" : "white",
                                 fontSize: "13px", fontWeight: "700", fontFamily: "inherit"
                             }}>
@@ -267,8 +270,8 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
 
                 {/* 오른쪽: 가방 (인벤토리) */}
                 <section style={{ ...card, flex: 1 }}>
-                    <p style={{ margin: "0 0 4px", fontSize: "15px", fontWeight: "700", color: "#111" }}>🎒 내 가방</p>
-                    <p style={{ margin: "0 0 16px", fontSize: "11px", color: "#aaa" }}>상점에서 구매한 아이템을 여기서 사용해봐요</p>
+                    <p style={{ margin: "0 0 4px", fontSize: "15px", fontWeight: "700", color: "var(--moa-text)" }}>🎒 내 가방</p>
+                    <p style={{ margin: "0 0 16px", fontSize: "11px", color: "var(--moa-text-sub)" }}>상점에서 구매한 아이템을 여기서 사용해봐요</p>
 
                     <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "20px" }}>
 
@@ -277,8 +280,8 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
                             <p style={{ margin: "0 0 10px", fontSize: "13px", fontWeight: "700", color: "#ff9f43" }}>🍖 먹이</p>
                             {feedItems.length === 0 ? (
                                 <div style={{ background: "#fafafa", borderRadius: "14px", padding: "18px", textAlign: "center", border: "1px solid #f0f0f0" }}>
-                                    <p style={{ margin: "0 0 4px", fontSize: "13px", color: "#ccc" }}>먹이가 없어요!</p>
-                                    <button onClick={() => setActiveTab("shop")} style={{ background: "none", border: "none", fontSize: "12px", color: "#F4A7B9", cursor: "pointer", fontWeight: "700", fontFamily: "inherit" }}>
+                                    <p style={{ margin: "0 0 4px", fontSize: "13px", color: "var(--moa-text-sub)" }}>먹이가 없어요!</p>
+                                    <button onClick={() => setActiveTab("shop")} style={{ background: "none", border: "none", fontSize: "12px", color: "var(--moa-primary)", cursor: "pointer", fontWeight: "700", fontFamily: "inherit" }}>
                                         상점에서 구매하기 →
                                     </button>
                                 </div>
@@ -289,8 +292,8 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
                                             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                                 <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#fff0e6", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>🍖</div>
                                                 <div>
-                                                    <p style={{ margin: "0 0 2px", fontSize: "13px", fontWeight: "700", color: "#333" }}>{item.name}</p>
-                                                    <p style={{ margin: 0, fontSize: "11px", color: "#aaa" }}>{item.description} · <strong style={{ color: "#ff9f43" }}>{item.quantity}개</strong> 보유</p>
+                                                    <p style={{ margin: "0 0 2px", fontSize: "13px", fontWeight: "700", color: "var(--moa-text)" }}>{item.name}</p>
+                                                    <p style={{ margin: 0, fontSize: "11px", color: "var(--moa-text-sub)" }}>{item.description} · <strong style={{ color: "#ff9f43" }}>{item.quantity}개</strong> 보유</p>
                                                 </div>
                                             </div>
                                             <button onClick={() => handleUseItem(item)} style={{
@@ -309,8 +312,8 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
                             <p style={{ margin: "0 0 10px", fontSize: "13px", fontWeight: "700", color: "#54a0ff" }}>🎮 장난감</p>
                             {toyItems.length === 0 ? (
                                 <div style={{ background: "#fafafa", borderRadius: "14px", padding: "18px", textAlign: "center", border: "1px solid #f0f0f0" }}>
-                                    <p style={{ margin: "0 0 4px", fontSize: "13px", color: "#ccc" }}>장난감이 없어요!</p>
-                                    <button onClick={() => setActiveTab("shop")} style={{ background: "none", border: "none", fontSize: "12px", color: "#F4A7B9", cursor: "pointer", fontWeight: "700", fontFamily: "inherit" }}>
+                                    <p style={{ margin: "0 0 4px", fontSize: "13px", color: "var(--moa-text-sub)" }}>장난감이 없어요!</p>
+                                    <button onClick={() => setActiveTab("shop")} style={{ background: "none", border: "none", fontSize: "12px", color: "var(--moa-primary)", cursor: "pointer", fontWeight: "700", fontFamily: "inherit" }}>
                                         상점에서 구매하기 →
                                     </button>
                                 </div>
@@ -321,8 +324,8 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
                                             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                                 <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#f0f0ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>🎮</div>
                                                 <div>
-                                                    <p style={{ margin: "0 0 2px", fontSize: "13px", fontWeight: "700", color: "#333" }}>{item.name}</p>
-                                                    <p style={{ margin: 0, fontSize: "11px", color: "#aaa" }}>{item.description} · <strong style={{ color: "#54a0ff" }}>{item.quantity}개</strong> 보유</p>
+                                                    <p style={{ margin: "0 0 2px", fontSize: "13px", fontWeight: "700", color: "var(--moa-text)" }}>{item.name}</p>
+                                                    <p style={{ margin: 0, fontSize: "11px", color: "var(--moa-text-sub)" }}>{item.description} · <strong style={{ color: "#54a0ff" }}>{item.quantity}개</strong> 보유</p>
                                                 </div>
                                             </div>
                                             <button onClick={() => handleUseItem(item)} style={{
@@ -345,8 +348,8 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
     const renderQuest = () => (
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", flex: 1, minHeight: 0 }}>
             <section style={{ ...card, flex: 1 }}>
-                <p style={{ margin: "0 0 4px", fontSize: "15px", fontWeight: "700", color: "#111" }}>📋 일간 퀘스트</p>
-                <p style={{ margin: "0 0 16px", fontSize: "11px", color: "#aaa" }}>매일 자정에 초기화돼요</p>
+                <p style={{ margin: "0 0 4px", fontSize: "15px", fontWeight: "700", color: "var(--moa-text)" }}>📋 일간 퀘스트</p>
+                <p style={{ margin: "0 0 16px", fontSize: "11px", color: "var(--moa-text-sub)" }}>매일 자정에 초기화돼요</p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1, overflowY: "auto" }}>
                     {[
                         { key: "q_record",   label: "오늘의 소비 기록", emoji: "✏️", reward: 45, exp: 5,  hint: "내역 추가에서 지출/수입을 기록하면 자동 달성!" },
@@ -361,7 +364,7 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
                             display: "flex", alignItems: "center", justifyContent: "space-between"
                         }}>
                             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                                <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: quest?.[key] ? "#e8f5e9" : "#fff0f3", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>
+                                <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: quest?.[key] ? "#e8f5e9" : "var(--moa-light)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>
                                     {quest?.[key] ? "✅" : emoji}
                                 </div>
                                 <div>
@@ -372,8 +375,8 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
                                 </div>
                             </div>
                             <div style={{ textAlign: "right", display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "4px" }}>
-                                <span style={{ fontSize: "12px", color: quest?.[key] ? "#b2dfdb" : "#F4A7B9", fontWeight: "700" }}>🌱 {reward}</span>
-                                {exp > 0 && <span style={{ fontSize: "11px", color: "#bbb" }}>+{exp} EXP</span>}
+                                <span style={{ fontSize: "12px", color: quest?.[key] ? "#b2dfdb" : "var(--moa-primary)", fontWeight: "700" }}>🌱 {reward}</span>
+                                {exp > 0 && <span style={{ fontSize: "11px", color: "var(--moa-text-sub)" }}>+{exp} EXP</span>}
                             </div>
                         </div>
                     ))}
@@ -381,7 +384,7 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
 
                 {/* 전체 완료 배너 */}
                 {quest?.all_done && (
-                    <div style={{ marginTop: "12px", background: "linear-gradient(135deg, #fff0f3, #ffe4ec)", borderRadius: "14px", padding: "14px", border: "1px solid #ffd9e2", textAlign: "center", flexShrink: 0 }}>
+                    <div style={{ marginTop: "12px", background: "linear-gradient(135deg, var(--moa-light), #ffe4ec)", borderRadius: "14px", padding: "14px", border: "1px solid var(--moa-border)", textAlign: "center", flexShrink: 0 }}>
                         <p style={{ margin: 0, fontSize: "14px", fontWeight: "700", color: "#e91e8c" }}>🎉 오늘 퀘스트 전부 완료! 씨앗 150개 추가 보상!</p>
                     </div>
                 )}
@@ -389,8 +392,8 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
 
             {/* 주간 퀘스트 */}
             <section style={{ ...card, flex: 1 }}>
-                <p style={{ margin: "0 0 4px", fontSize: "15px", fontWeight: "700", color: "#111" }}>📆 주간 퀘스트</p>
-                <p style={{ margin: "0 0 16px", fontSize: "11px", color: "#aaa" }}>이번 주 목표를 달성해봐요!</p>
+                <p style={{ margin: "0 0 4px", fontSize: "15px", fontWeight: "700", color: "var(--moa-text)" }}>📆 주간 퀘스트</p>
+                <p style={{ margin: "0 0 16px", fontSize: "11px", color: "var(--moa-text-sub)" }}>이번 주 목표를 달성해봐요!</p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                     {[
                         { label: "5일 이상 기록하기", desc: "일주일 중 5일 기록", emoji: "📝", reward: 200, exp: 80 },
@@ -399,17 +402,17 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
                     ].map(({ label, desc, emoji, reward, exp }) => (
                         <div key={label} style={{ background: "#fafafa", borderRadius: "16px", padding: "14px 16px", border: "1px solid #eee", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                                <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: "#fff0f3", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>
+                                <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: "var(--moa-light)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>
                                     {emoji}
                                 </div>
                                 <div>
-                                    <p style={{ margin: "0 0 2px", fontSize: "13px", fontWeight: "700", color: "#333" }}>{label}</p>
-                                    <p style={{ margin: 0, fontSize: "11px", color: "#bbb" }}>{desc}</p>
+                                    <p style={{ margin: "0 0 2px", fontSize: "13px", fontWeight: "700", color: "var(--moa-text)" }}>{label}</p>
+                                    <p style={{ margin: 0, fontSize: "11px", color: "var(--moa-text-sub)" }}>{desc}</p>
                                 </div>
                             </div>
                             <div style={{ textAlign: "right" }}>
-                                <span style={{ fontSize: "12px", color: "#F4A7B9", fontWeight: "700", display: "block" }}>🌱 {reward}</span>
-                                <span style={{ fontSize: "11px", color: "#aaa" }}>+{exp} EXP</span>
+                                <span style={{ fontSize: "12px", color: "var(--moa-primary)", fontWeight: "700", display: "block" }}>🌱 {reward}</span>
+                                <span style={{ fontSize: "11px", color: "var(--moa-text-sub)" }}>+{exp} EXP</span>
                             </div>
                         </div>
                     ))}
@@ -430,8 +433,8 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
                 <section style={{ ...card, flex: 1 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", flexShrink: 0 }}>
                         <div>
-                            <p style={{ margin: "0 0 2px", fontSize: "15px", fontWeight: "700", color: "#111" }}>🍖 먹이 상점</p>
-                            <p style={{ margin: 0, fontSize: "11px", color: "#aaa" }}>구매하면 거실 가방에 들어가요</p>
+                            <p style={{ margin: "0 0 2px", fontSize: "15px", fontWeight: "700", color: "var(--moa-text)" }}>🍖 먹이 상점</p>
+                            <p style={{ margin: 0, fontSize: "11px", color: "var(--moa-text-sub)" }}>구매하면 거실 가방에 들어가요</p>
                         </div>
                         <div style={{ background: "#f9f6e8", borderRadius: "12px", padding: "6px 14px", border: "1px solid #f0e68c" }}>
                             <span style={{ fontSize: "13px", fontWeight: "700", color: "#8b7500" }}>🌱 {status?.seeds || 0}</span>
@@ -443,13 +446,13 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
                                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                     <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#fff0e6", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>🍖</div>
                                     <div>
-                                        <p style={{ margin: "0 0 2px", fontSize: "13px", fontWeight: "700", color: "#333" }}>{item.name}</p>
-                                        <p style={{ margin: 0, fontSize: "11px", color: "#aaa" }}>{item.description}</p>
+                                        <p style={{ margin: "0 0 2px", fontSize: "13px", fontWeight: "700", color: "var(--moa-text)" }}>{item.name}</p>
+                                        <p style={{ margin: 0, fontSize: "11px", color: "var(--moa-text-sub)" }}>{item.description}</p>
                                     </div>
                                 </div>
                                 <button onClick={() => handleBuy(item)} style={{
                                     padding: "7px 14px", borderRadius: "10px", border: "none",
-                                    background: (status?.seeds || 0) >= item.price ? "#F4A7B9" : "#eee",
+                                    background: (status?.seeds || 0) >= item.price ? "var(--moa-primary)" : "#eee",
                                     color: (status?.seeds || 0) >= item.price ? "white" : "#aaa",
                                     fontSize: "12px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit",
                                     whiteSpace: "nowrap"
@@ -464,8 +467,8 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
                 <section style={{ ...card, flex: 1 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", flexShrink: 0 }}>
                         <div>
-                            <p style={{ margin: "0 0 2px", fontSize: "15px", fontWeight: "700", color: "#111" }}>🎮 장난감 상점</p>
-                            <p style={{ margin: 0, fontSize: "11px", color: "#aaa" }}>구매하면 거실 가방에 들어가요</p>
+                            <p style={{ margin: "0 0 2px", fontSize: "15px", fontWeight: "700", color: "var(--moa-text)" }}>🎮 장난감 상점</p>
+                            <p style={{ margin: 0, fontSize: "11px", color: "var(--moa-text-sub)" }}>구매하면 거실 가방에 들어가요</p>
                         </div>
                         <div style={{ background: "#f9f6e8", borderRadius: "12px", padding: "6px 14px", border: "1px solid #f0e68c" }}>
                             <span style={{ fontSize: "13px", fontWeight: "700", color: "#8b7500" }}>🌱 {status?.seeds || 0}</span>
@@ -477,8 +480,8 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
                                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                     <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#f0f0ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>🎮</div>
                                     <div>
-                                        <p style={{ margin: "0 0 2px", fontSize: "13px", fontWeight: "700", color: "#333" }}>{item.name}</p>
-                                        <p style={{ margin: 0, fontSize: "11px", color: "#aaa" }}>{item.description}</p>
+                                        <p style={{ margin: "0 0 2px", fontSize: "13px", fontWeight: "700", color: "var(--moa-text)" }}>{item.name}</p>
+                                        <p style={{ margin: 0, fontSize: "11px", color: "var(--moa-text-sub)" }}>{item.description}</p>
                                     </div>
                                 </div>
                                 <button onClick={() => handleBuy(item)} style={{
@@ -505,38 +508,38 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
         return (
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", flex: 1, minHeight: 0 }}>
                 <section style={{ ...card, flex: 1 }}>
-                    <p style={{ margin: "0 0 4px", fontSize: "15px", fontWeight: "700", color: "#111" }}>🏆 달성한 업적</p>
-                    <p style={{ margin: "0 0 14px", fontSize: "11px", color: "#aaa" }}>{unlocked.length}개 달성</p>
+                    <p style={{ margin: "0 0 4px", fontSize: "15px", fontWeight: "700", color: "var(--moa-text)" }}>🏆 달성한 업적</p>
+                    <p style={{ margin: "0 0 14px", fontSize: "11px", color: "var(--moa-text-sub)" }}>{unlocked.length}개 달성</p>
                     <div style={{ display: "flex", flexDirection: "column", gap: "8px", flex: 1, overflowY: "auto" }}>
                         {unlocked.length === 0 ? (
                             <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                <p style={{ color: "#bbb", fontSize: "13px" }}>아직 달성한 업적이 없어요!</p>
+                                <p style={{ color: "var(--moa-text-sub)", fontSize: "13px" }}>아직 달성한 업적이 없어요!</p>
                             </div>
                         ) : unlocked.map(a => (
-                            <div key={a.key} style={{ background: "linear-gradient(135deg, #fff0f3, #ffe4ec)", borderRadius: "14px", padding: "12px 16px", border: "1px solid #ffd9e2", display: "flex", alignItems: "center", gap: "12px" }}>
+                            <div key={a.key} style={{ background: "linear-gradient(135deg, var(--moa-light), #ffe4ec)", borderRadius: "14px", padding: "12px 16px", border: "1px solid var(--moa-border)", display: "flex", alignItems: "center", gap: "12px" }}>
                                 <span style={{ fontSize: "24px" }}>🏆</span>
                                 <div>
                                     <p style={{ margin: "0 0 2px", fontSize: "13px", fontWeight: "700", color: "#e91e8c" }}>{a.name}</p>
-                                    <p style={{ margin: 0, fontSize: "11px", color: "#aaa" }}>{a.desc}</p>
+                                    <p style={{ margin: 0, fontSize: "11px", color: "var(--moa-text-sub)" }}>{a.desc}</p>
                                 </div>
-                                <span style={{ marginLeft: "auto", fontSize: "11px", color: "#F4A7B9", fontWeight: "700", whiteSpace: "nowrap" }}>🌱 {a.reward}</span>
+                                <span style={{ marginLeft: "auto", fontSize: "11px", color: "var(--moa-primary)", fontWeight: "700", whiteSpace: "nowrap" }}>🌱 {a.reward}</span>
                             </div>
                         ))}
                     </div>
                 </section>
 
                 <section style={{ ...card, flex: 1 }}>
-                    <p style={{ margin: "0 0 4px", fontSize: "15px", fontWeight: "700", color: "#111" }}>🔒 미달성 업적</p>
-                    <p style={{ margin: "0 0 14px", fontSize: "11px", color: "#aaa" }}>{locked.length}개 남음</p>
+                    <p style={{ margin: "0 0 4px", fontSize: "15px", fontWeight: "700", color: "var(--moa-text)" }}>🔒 미달성 업적</p>
+                    <p style={{ margin: "0 0 14px", fontSize: "11px", color: "var(--moa-text-sub)" }}>{locked.length}개 남음</p>
                     <div style={{ display: "flex", flexDirection: "column", gap: "8px", flex: 1, overflowY: "auto" }}>
                         {locked.map(a => (
                             <div key={a.key} style={{ background: "#fafafa", borderRadius: "14px", padding: "12px 16px", border: "1px solid #f0f0f0", display: "flex", alignItems: "center", gap: "12px", opacity: 0.6 }}>
                                 <span style={{ fontSize: "24px" }}>🔒</span>
                                 <div>
-                                    <p style={{ margin: "0 0 2px", fontSize: "13px", fontWeight: "700", color: "#555" }}>{a.name}</p>
-                                    <p style={{ margin: 0, fontSize: "11px", color: "#bbb" }}>{a.desc}</p>
+                                    <p style={{ margin: "0 0 2px", fontSize: "13px", fontWeight: "700", color: "var(--moa-text)" }}>{a.name}</p>
+                                    <p style={{ margin: 0, fontSize: "11px", color: "var(--moa-text-sub)" }}>{a.desc}</p>
                                 </div>
-                                <span style={{ marginLeft: "auto", fontSize: "11px", color: "#bbb", fontWeight: "700", whiteSpace: "nowrap" }}>🌱 {a.reward}</span>
+                                <span style={{ marginLeft: "auto", fontSize: "11px", color: "var(--moa-text-sub)", fontWeight: "700", whiteSpace: "nowrap" }}>🌱 {a.reward}</span>
                             </div>
                         ))}
                     </div>
@@ -546,7 +549,7 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
     }
 
     const card = {
-        background: "white", borderRadius: "24px", padding: "20px 24px",
+        background: "var(--moa-bg-card)", borderRadius: "24px", padding: "20px 24px",
         boxShadow: "0 8px 24px rgba(0,0,0,0.04)", border: "1px solid #f0f0f0",
         display: "flex", flexDirection: "column", overflow: "hidden"
     }
@@ -562,8 +565,8 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
         <div style={{
             display: "flex", height: isMobile ? "auto" : "100vh", minHeight: "100vh", width: "100vw",
             fontFamily: "'GriounPolice', cursive",
-            backgroundImage: `linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px)`,
-            backgroundSize: "28px 28px", backgroundColor: "#f5f5f5",
+            backgroundImage: `linear-gradient(var(--moa-grid) 1px, transparent 1px), linear-gradient(90deg, var(--moa-grid) 1px, transparent 1px)`,
+            backgroundSize: "28px 28px", backgroundColor: "var(--moa-bg)",
             overflow: isMobile ? "auto" : "hidden", boxSizing: "border-box"
         }}>
 
@@ -585,17 +588,17 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
             {/* 모달 */}
             {modalConfig.isOpen && (
                 <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
-                    <div style={{ background: "white", borderRadius: "20px", padding: "24px", width: "320px", textAlign: "center", boxShadow: "0 10px 30px rgba(0,0,0,0.15)", border: "1px solid #ffd9e2" }}>
+                    <div style={{ background: "var(--moa-bg-card)", borderRadius: "20px", padding: "24px", width: "320px", textAlign: "center", boxShadow: "0 10px 30px rgba(0,0,0,0.15)", border: "1px solid var(--moa-border)" }}>
                         <span style={{ fontSize: "36px", display: "block", marginBottom: "12px" }}>🐷</span>
-                        <p style={{ margin: "0 0 20px", fontSize: "15px", fontWeight: "600", color: "#333", whiteSpace: "pre-line" }}>{modalConfig.message}</p>
+                        <p style={{ margin: "0 0 20px", fontSize: "15px", fontWeight: "600", color: "var(--moa-text)", whiteSpace: "pre-line" }}>{modalConfig.message}</p>
                         <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
                             {modalConfig.type === "confirm" ? (
                                 <>
-                                    <button onClick={() => setModalConfig({ isOpen: false })} style={{ flex: 1, padding: "10px", background: "#eee", border: "none", borderRadius: "10px", fontSize: "13px", cursor: "pointer", fontWeight: "600", color: "#555", fontFamily: "inherit" }}>취소</button>
-                                    <button onClick={modalConfig.onConfirm} style={{ flex: 1, padding: "10px", background: "#F4A7B9", border: "none", borderRadius: "10px", fontSize: "13px", cursor: "pointer", fontWeight: "600", color: "white", fontFamily: "inherit" }}>확인</button>
+                                    <button onClick={() => setModalConfig({ isOpen: false })} style={{ flex: 1, padding: "10px", background: "#eee", border: "none", borderRadius: "10px", fontSize: "13px", cursor: "pointer", fontWeight: "600", color: "var(--moa-text)", fontFamily: "inherit" }}>취소</button>
+                                    <button onClick={modalConfig.onConfirm} style={{ flex: 1, padding: "10px", background: "var(--moa-primary)", border: "none", borderRadius: "10px", fontSize: "13px", cursor: "pointer", fontWeight: "600", color: "white", fontFamily: "inherit" }}>확인</button>
                                 </>
                             ) : (
-                                <button onClick={() => setModalConfig({ isOpen: false })} style={{ width: "120px", padding: "10px", background: "#F4A7B9", border: "none", borderRadius: "10px", fontSize: "13px", cursor: "pointer", fontWeight: "600", color: "white", fontFamily: "inherit" }}>확인</button>
+                                <button onClick={() => setModalConfig({ isOpen: false })} style={{ width: "120px", padding: "10px", background: "var(--moa-primary)", border: "none", borderRadius: "10px", fontSize: "13px", cursor: "pointer", fontWeight: "600", color: "white", fontFamily: "inherit" }}>확인</button>
                             )}
                         </div>
                     </div>
@@ -603,22 +606,26 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
             )}
 
             {/* 헤더 */}
-            <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "64px", background: "white", borderBottom: "1px solid #eee", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 32px", boxSizing: "border-box" }}>
+            <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "64px", background: "var(--moa-bg-card)", borderBottom: "1px solid #eee", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 32px", boxSizing: "border-box" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }} onClick={onHome}>
                     <span style={{ fontSize: "28px" }}>🐷</span>
-                    <span style={{ fontSize: "22px", fontWeight: "700", color: "#F4A7B9" }}>MOA</span>
+                    <span style={{ fontSize: "22px", fontWeight: "700", color: "var(--moa-primary)" }}>MOA</span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", background: "#f5f5f5", borderRadius: "20px", padding: "6px 12px" }}>
-                    <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "#F4A7B9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", color: "white" }}>{nickname[0]}</div>
-                    <span style={{ fontSize: "13px", color: "#333", fontWeight: "600" }}>{nickname}</span>
+                    <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "var(--moa-primary)", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", color: "white" }}>{localStorage.getItem("profileImg") ? (
+        <img src={localStorage.getItem("profileImg")} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }} onError={e => { e.target.style.display = "none" }} />
+    ) : (
+        nickname[0]
+    )}</div>
+                    <span style={{ fontSize: "13px", color: "var(--moa-text)", fontWeight: "600" }}>{nickname}</span>
                 </div>
             </div>
 
             {/* 사이드바 - PC only */}
             {!isMobile && (
-            <div style={{ position: "fixed", top: "64px", left: 0, width: "72px", height: "calc(100vh - 64px)", background: "white", borderRight: "1px solid #eee", display: "flex", flexDirection: "column", alignItems: "center", padding: "24px 0", gap: "12px", zIndex: 100 }}>
+            <div style={{ position: "fixed", top: "64px", left: 0, width: "72px", height: "calc(100vh - 64px)", background: "var(--moa-bg-card)", borderRight: "1px solid #eee", display: "flex", flexDirection: "column", alignItems: "center", padding: "24px 0", gap: "12px", zIndex: 100 }}>
                 {navItems.map(item => (
-                    <div key={item.key} onClick={item.onClick} style={{ width: "48px", height: "48px", borderRadius: "14px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "22px", cursor: "pointer", background: current === item.key ? "#fff0f3" : "transparent", border: current === item.key ? "1.5px solid #F4A7B9" : "1.5px solid transparent", transition: "all 0.2s" }}>
+                    <div key={item.key} onClick={item.onClick} style={{ width: "48px", height: "48px", borderRadius: "14px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "22px", cursor: "pointer", background: current === item.key ? "var(--moa-light)" : "transparent", border: current === item.key ? "1.5px solid var(--moa-primary)" : "1.5px solid transparent", transition: "all 0.2s" }}>
                         {item.icon}
                     </div>
                 ))}
@@ -632,7 +639,7 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
                 <div style={{ display: "flex", alignItems: isMobile ? "flex-start" : "center", justifyContent: "space-between", marginBottom: "16px", flexShrink: 0, flexDirection: isMobile ? "column" : "row", gap: isMobile ? "10px" : 0 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                         <span style={{ fontSize: "24px" }}>🎮</span>
-                        <span style={{ fontSize: "20px", fontWeight: "700", color: "#333" }}>캐릭터 키우기</span>
+                        <span style={{ fontSize: "20px", fontWeight: "700", color: "var(--moa-text)" }}>캐릭터 키우기</span>
                     </div>
                     <div style={{ display: "flex", gap: "6px" }}>
                         {[
@@ -644,7 +651,7 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
                             <button key={tab.key} onClick={() => setActiveTab(tab.key)} style={{
                                 padding: "8px 10px", borderRadius: "20px", border: "none", cursor: "pointer",
                                 fontSize: isMobile ? "10px" : "12px", fontWeight: "700", fontFamily: "inherit",
-                                background: activeTab === tab.key ? "#F4A7B9" : "#f0f0f0",
+                                background: activeTab === tab.key ? "var(--moa-primary)" : "#f0f0f0",
                                 color: activeTab === tab.key ? "white" : "#666",
                                 transition: "all 0.2s"
                             }}>
@@ -657,7 +664,7 @@ function GamePage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout,
                 {loading ? (
                     <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
                         <span style={{ fontSize: "48px" }}>🐷</span>
-                        <p style={{ color: "#aaa", fontSize: "15px", marginTop: "16px" }}>불러오는 중...</p>
+                        <p style={{ color: "var(--moa-text-sub)", fontSize: "15px", marginTop: "16px" }}>불러오는 중...</p>
                     </div>
                 ) : (
                     <>

@@ -23,7 +23,7 @@ const INCOME_CATEGORIES = [
     { label: "기타", emoji: "📦" },
 ]
 
-function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpend, onLogout, current, isMobile }) {
+function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpend, onGame, onShop, onFriends, onLogout, current, isMobile }) {
     const today = new Date()
     const [year, setYear] = useState(today.getFullYear())
     const [month, setMonth] = useState(today.getMonth())
@@ -206,7 +206,7 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
         }
     }
 
-    const accentColor = editItem?.type === "수입" ? "#7F77DD" : "#F4A7B9"
+    const accentColor = editItem?.type === "수입" ? "#7F77DD" : "var(--moa-primary)"
 
     const navItems = [
         { key: "main", icon: "🏠", onClick: onHome },
@@ -214,6 +214,9 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
         { key: "analysis", icon: "📊", onClick: onAnalysis },
         { key: "wishlist", icon: "🛍️", onClick: onWishlist },
         { key: "chat", icon: "💬", onClick: onChat },
+        { key: "game", icon: "🎮", onClick: onGame },
+        { key: "shop", icon: "🎨", onClick: onShop },
+        { key: "friends", icon: "👥", onClick: onFriends },
         { key: "logout", icon: "🚪", onClick: onLogout },
     ]
 
@@ -224,9 +227,9 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
             minHeight: "100vh",
             width: "100vw",
             fontFamily: "'GriounPolice', cursive",
-            backgroundImage: `linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px)`,
+            backgroundImage: `linear-gradient(var(--moa-grid) 1px, transparent 1px), linear-gradient(90deg, var(--moa-grid) 1px, transparent 1px)`,
             backgroundSize: "28px 28px",
-            backgroundColor: "#f5f5f5",
+            backgroundColor: "var(--moa-bg)",
             overflow: isMobile ? "auto" : "hidden",
             boxSizing: "border-box"
         }}>
@@ -247,16 +250,16 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
                     backdropFilter: "blur(2px)"
                 }}>
                     <div style={{
-                        background: "white",
+                        background: "var(--moa-bg-card)",
                         borderRadius: "20px",
                         padding: "24px",
                         width: "320px",
                         textAlign: "center",
                         boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
-                        border: "1px solid #ffd9e2"
+                        border: "1px solid var(--moa-border)"
                     }}>
                         <span style={{ fontSize: "36px", display: "block", marginBottom: "12px" }}>🐷</span>
-                        <p style={{ margin: "0 0 20px", fontSize: "15px", fontWeight: "600", color: "#333", lineHeight: "1.5" }}>
+                        <p style={{ margin: "0 0 20px", fontSize: "15px", fontWeight: "600", color: "var(--moa-text)", lineHeight: "1.5" }}>
                             {modalConfig.message}
                         </p>
                         <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
@@ -273,7 +276,7 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
                                             fontSize: "13px",
                                             cursor: "pointer",
                                             fontWeight: "600",
-                                            color: "#555",
+                                            color: "var(--moa-text)",
                                             fontFamily: "inherit"
                                         }}
                                     >
@@ -284,7 +287,7 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
                                         style={{
                                             flex: 1,
                                             padding: "10px",
-                                            background: "#F4A7B9",
+                                            background: "var(--moa-primary)",
                                             border: "none",
                                             borderRadius: "10px",
                                             fontSize: "13px",
@@ -303,7 +306,7 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
                                     style={{
                                         width: "120px",
                                         padding: "10px",
-                                        background: "#F4A7B9",
+                                        background: "var(--moa-primary)",
                                         border: "none",
                                         borderRadius: "10px",
                                         fontSize: "13px",
@@ -323,28 +326,32 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
 
             {}
             {/* Top Bar */}
-            <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "64px", background: "white", borderBottom: "1px solid #eee", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 32px", boxSizing: "border-box" }}>
+            <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "64px", background: "var(--moa-bg-card)", borderBottom: "1px solid #eee", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 32px", boxSizing: "border-box" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }} onClick={onHome}>
                     <span style={{ fontSize: "28px" }}>🐷</span>
-                    <span style={{ fontSize: "22px", fontWeight: "700", color: "#F4A7B9" }}>MOA</span>
+                    <span style={{ fontSize: "22px", fontWeight: "700", color: "var(--moa-primary)" }}>MOA</span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
                     <span style={{ fontSize: "20px" }}>🔔</span>
                     <div style={{ display: "flex", alignItems: "center", gap: "8px", background: "#f5f5f5", borderRadius: "20px", padding: "6px 12px" }}>
-                        <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "#F4A7B9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", color: "white" }}>
-                            {(localStorage.getItem("nickname") || "U")[0]}
+                        <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "var(--moa-primary)", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", color: "white" }}>
+                            {localStorage.getItem("profileImg") ? (
+                                <img src={localStorage.getItem("profileImg")} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }} onError={e => { e.target.style.display = "none" }} />
+                            ) : (
+                                (localStorage.getItem("nickname") || "U")[0]
+                            )}
                         </div>
-                        <span style={{ fontSize: "13px", color: "#333" }}>{localStorage.getItem("nickname") || "사용자"}</span>
-                        <span style={{ fontSize: "11px", color: "#aaa" }}>▾</span>
+                        <span style={{ fontSize: "13px", color: "var(--moa-text)" }}>{localStorage.getItem("nickname") || "사용자"}</span>
+                        <span style={{ fontSize: "11px", color: "var(--moa-text-sub)" }}>▾</span>
                     </div>
                 </div>
             </div>
 
             {/* Side Bar - PC only */}
             {!isMobile && (
-            <div style={{ position: "fixed", top: "64px", left: 0, width: "72px", height: "calc(100vh - 64px)", background: "white", borderRight: "1px solid #eee", display: "flex", flexDirection: "column", alignItems: "center", padding: "24px 0", gap: "12px", zIndex: 100 }}>
+            <div style={{ position: "fixed", top: "64px", left: 0, width: "72px", height: "calc(100vh - 64px)", background: "var(--moa-bg-card)", borderRight: "1px solid #eee", display: "flex", flexDirection: "column", alignItems: "center", padding: "24px 0", gap: "12px", zIndex: 100 }}>
                 {navItems.map(item => (
-                    <div key={item.key} onClick={item.onClick} style={{ width: "48px", height: "48px", borderRadius: "14px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "22px", cursor: "pointer", background: current === item.key ? "#fff0f3" : "transparent", border: current === item.key ? "1.5px solid #F4A7B9" : "1.5px solid transparent" }}>
+                    <div key={item.key} onClick={item.onClick} style={{ width: "48px", height: "48px", borderRadius: "14px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "22px", cursor: "pointer", background: current === item.key ? "var(--moa-light)" : "transparent", border: current === item.key ? "1.5px solid var(--moa-primary)" : "1.5px solid transparent" }}>
                         {item.icon}
                     </div>
                 ))}
@@ -366,9 +373,9 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
             }}>
                 {/* Month Picker Controller */}
                 <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px", flexShrink: 0 }}>
-                    <button onClick={prevMonth} style={{ background: "none", border: "none", fontSize: "22px", cursor: "pointer", color: "#666" }}>‹</button>
-                    <span style={{ fontSize: "20px", fontWeight: "700", color: "#333" }}>{month + 1}월 내역</span>
-                    <button onClick={nextMonth} style={{ background: "none", border: "none", fontSize: "22px", cursor: "pointer", color: "#666" }}>›</button>
+                    <button onClick={prevMonth} style={{ background: "none", border: "none", fontSize: "22px", cursor: "pointer", color: "var(--moa-text-sub)" }}>‹</button>
+                    <span style={{ fontSize: "20px", fontWeight: "700", color: "var(--moa-text)" }}>{month + 1}월 내역</span>
+                    <button onClick={nextMonth} style={{ background: "none", border: "none", fontSize: "22px", cursor: "pointer", color: "var(--moa-text-sub)" }}>›</button>
                 </div>
 
                 {/* 2-Column Grid filling the remaining heights exactly */}
@@ -396,25 +403,25 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
                                 display: "flex",
                                 alignItems: "center",
                                 gap: "8px",
-                                background: "white",
+                                background: "var(--moa-bg-card)",
                                 borderRadius: "12px",
                                 padding: "10px 14px",
                                 border: "1px solid #eee",
                                 height: "42px",
                                 boxSizing: "border-box"
                             }}>
-                                <span style={{ color: "#aaa" }}>🔍</span>
+                                <span style={{ color: "var(--moa-text-sub)" }}>🔍</span>
                                 <input
                                     value={search}
                                     onChange={e => setSearch(e.target.value)}
                                     placeholder="검색"
-                                    style={{ border: "none", outline: "none", fontSize: "14px", color: "#333", width: "100%", fontFamily: "inherit", background: "none" }}
+                                    style={{ border: "none", outline: "none", fontSize: "14px", color: "var(--moa-text)", width: "100%", fontFamily: "inherit", background: "none" }}
                                 />
                             </div>
                             <button
                                 onClick={onAddSpend}
                                 style={{
-                                    background: "#F4A7B9",
+                                    background: "var(--moa-primary)",
                                     color: "white",
                                     border: "none",
                                     borderRadius: "12px",
@@ -431,15 +438,15 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
                         </div>
 
                         {/* Row 2: Total Expense Box */}
-                        <div style={{ background: "white", borderRadius: "14px", padding: "14px 20px", border: "1px solid #eee", flexShrink: 0 }}>
-                            <p style={{ margin: "0 0 2px", fontSize: "12px", color: "#bbb" }}>{month + 1}월 전체 지출 금액</p>
-                            <p style={{ margin: 0, fontSize: "22px", fontWeight: "700", color: "#333" }}>{totalExpense.toLocaleString()}원</p>
+                        <div style={{ background: "var(--moa-bg-card)", borderRadius: "14px", padding: "14px 20px", border: "1px solid #eee", flexShrink: 0 }}>
+                            <p style={{ margin: "0 0 2px", fontSize: "12px", color: "var(--moa-text-sub)" }}>{month + 1}월 전체 지출 금액</p>
+                            <p style={{ margin: 0, fontSize: "22px", fontWeight: "700", color: "var(--moa-text)" }}>{totalExpense.toLocaleString()}원</p>
                         </div>
 
                         {}
                         {/* Row 3: Calendar Card (Stretched to fill the remaining area beautifully without empty spaces) */}
                         <div style={{
-                            background: "white",
+                            background: "var(--moa-bg-card)",
                             borderRadius: "16px",
                             padding: "20px",
                             border: "1px solid #eee",
@@ -452,7 +459,7 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
                         }}>
                             <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", marginBottom: "12px", flexShrink: 0 }}>
                                 {["일", "월", "화", "수", "목", "금", "토"].map((d, i) => (
-                                    <div key={d} style={{ textAlign: "center", fontSize: "12px", fontWeight: "600", color: i === 0 ? "#F4A7B9" : i === 6 ? "#7F77DD" : "#bbb", padding: "4px 0" }}>{d}</div>
+                                    <div key={d} style={{ textAlign: "center", fontSize: "12px", fontWeight: "600", color: i === 0 ? "var(--moa-primary)" : i === 6 ? "#7F77DD" : "#bbb", padding: "4px 0" }}>{d}</div>
                                 ))}
                             </div>
 
@@ -472,7 +479,7 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
                                                         textAlign: "center",
                                                         borderRadius: "10px",
                                                         cursor: d.isCurrentMonth ? "pointer" : "default",
-                                                        background: isSelected ? "#F4A7B9" : "transparent",
+                                                        background: isSelected ? "var(--moa-primary)" : "transparent",
                                                         transition: "all 0.15s ease-in-out",
                                                         display: "flex",
                                                         flexDirection: "column",
@@ -480,20 +487,20 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
                                                         padding: "6px 2px",
                                                         height: "100%",
                                                         boxSizing: "border-box",
-                                                        border: isToday && !isSelected ? "1.5px solid #F4A7B9" : "1.5px solid transparent"
+                                                        border: isToday && !isSelected ? "1.5px solid var(--moa-primary)" : "1.5px solid transparent"
                                                     }}
                                                 >
                                                     <div style={{
                                                         fontSize: "13px",
                                                         fontWeight: isToday ? "700" : "400",
-                                                        color: isSelected ? "white" : isToday ? "#F4A7B9" : !d.isCurrentMonth ? "#ddd" : j === 0 ? "#F4A7B9" : j === 6 ? "#7F77DD" : "#333",
+                                                        color: isSelected ? "white" : isToday ? "var(--moa-primary)" : !d.isCurrentMonth ? "#ddd" : j === 0 ? "var(--moa-primary)" : j === 6 ? "#7F77DD" : "#333",
                                                         marginTop: "2px"
                                                     }}>
                                                         {d.date}
                                                     </div>
                                                     <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-end", flexGrow: 1, gap: "1px", marginBottom: "2px" }}>
                                                         {income > 0 && <div style={{ fontSize: "9px", fontWeight: "700", color: isSelected ? "white" : "#7F77DD", lineHeight: 1 }}>+{income.toLocaleString()}</div>}
-                                                        {expense > 0 && <div style={{ fontSize: "9px", fontWeight: "700", color: isSelected ? "white" : "#F4A7B9", lineHeight: 1 }}>-{expense.toLocaleString()}</div>}
+                                                        {expense > 0 && <div style={{ fontSize: "9px", fontWeight: "700", color: isSelected ? "white" : "var(--moa-primary)", lineHeight: 1 }}>-{expense.toLocaleString()}</div>}
                                                     </div>
                                                 </div>
                                             )
@@ -521,12 +528,12 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
                             height: "42px"
                         }}>
                             <div style={{
-                                background: "white",
+                                background: "var(--moa-bg-card)",
                                 borderRadius: "12px",
                                 padding: "0 16px",
                                 border: "1px solid #eee",
                                 fontSize: "14px",
-                                color: "#333",
+                                color: "var(--moa-text)",
                                 height: "100%",
                                 display: "flex",
                                 alignItems: "center",
@@ -538,14 +545,14 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
                                 <button
                                     onClick={() => setFilterOpen(prev => !prev)}
                                     style={{
-                                        background: "white",
+                                        background: "var(--moa-bg-card)",
                                         border: "1px solid #eee",
                                         borderRadius: "12px",
                                         padding: "0 16px",
                                         fontSize: "14px",
                                         cursor: "pointer",
                                         fontFamily: "inherit",
-                                        color: "#333",
+                                        color: "var(--moa-text)",
                                         display: "flex",
                                         alignItems: "center",
                                         gap: "6px",
@@ -556,9 +563,9 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
                                     {filter} ▾
                                 </button>
                                 {filterOpen && (
-                                    <div style={{ position: "absolute", right: 0, top: "46px", background: "white", borderRadius: "12px", border: "1px solid #eee", boxShadow: "0 4px 16px rgba(0,0,0,0.1)", zIndex: 50, overflow: "hidden", minWidth: "100px" }}>
+                                    <div style={{ position: "absolute", right: 0, top: "46px", background: "var(--moa-bg-card)", borderRadius: "12px", border: "1px solid #eee", boxShadow: "0 4px 16px rgba(0,0,0,0.1)", zIndex: 50, overflow: "hidden", minWidth: "100px" }}>
                                         {["전체", "입금", "출금"].map(f => (
-                                            <div key={f} onClick={() => { setFilter(f); setFilterOpen(false) }} style={{ padding: "12px 20px", cursor: "pointer", fontSize: "14px", color: filter === f ? "#F4A7B9" : "#333", background: filter === f ? "#fff0f3" : "transparent", fontWeight: filter === f ? "700" : "400" }}>{f}</div>
+                                            <div key={f} onClick={() => { setFilter(f); setFilterOpen(false) }} style={{ padding: "12px 20px", cursor: "pointer", fontSize: "14px", color: filter === f ? "var(--moa-primary)" : "#333", background: filter === f ? "var(--moa-light)" : "transparent", fontWeight: filter === f ? "700" : "400" }}>{f}</div>
                                         ))}
                                     </div>
                                 )}
@@ -570,7 +577,7 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
                         <div
                             ref={listContainerRef}
                             style={{
-                                background: "white",
+                                background: "var(--moa-bg-card)",
                                 borderRadius: "16px",
                                 padding: "20px",
                                 border: "1px solid #eee",
@@ -582,7 +589,7 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
                             }}
                         >
                             {grouped.length === 0 ? (
-                                <p style={{ textAlign: "center", color: "#aaa", padding: "40px 0", fontSize: "14px" }}>내역이 없어요!</p>
+                                <p style={{ textAlign: "center", color: "var(--moa-text-sub)", padding: "40px 0", fontSize: "14px" }}>내역이 없어요!</p>
                             ) : (
                                 grouped.map(([dateStr, items]) => {
                                     const isTargetGroup = selectedDate && dateStr === `${monthStr}-${String(selectedDate).padStart(2, "0")}`;
@@ -599,7 +606,7 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
                                             <p style={{
                                                 margin: "0 0 10px",
                                                 fontSize: "13px",
-                                                color: isTargetGroup ? "#F4A7B9" : "#999",
+                                                color: isTargetGroup ? "var(--moa-primary)" : "#999",
                                                 fontWeight: "600",
                                                 display: "flex",
                                                 alignItems: "center",
@@ -607,22 +614,22 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
                                                 transition: "color 0.3s ease"
                                             }}>
                                                 {getDayLabel(dateStr)}
-                                                {isTargetGroup && <span style={{ fontSize: "11px", background: "#fff0f3", padding: "2px 6px", borderRadius: "4px" }}>📍 클릭됨</span>}
+                                                {isTargetGroup && <span style={{ fontSize: "11px", background: "var(--moa-light)", padding: "2px 6px", borderRadius: "4px" }}>📍 클릭됨</span>}
                                             </p>
                                             {items.map(item => (
-                                                <div key={item.id} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px 14px", borderRadius: "12px", marginBottom: "8px", background: "#fafafa", border: isTargetGroup ? "1.5px solid #ffd9e2" : "1px solid #f0f0f0", transition: "all 0.3s ease" }}>
-                                                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: item.type === "지출" ? "#fff0f3" : "#f0f0ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px", flexShrink: 0 }}>
+                                                <div key={item.id} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px 14px", borderRadius: "12px", marginBottom: "8px", background: "#fafafa", border: isTargetGroup ? "1.5px solid var(--moa-border)" : "1px solid #f0f0f0", transition: "all 0.3s ease" }}>
+                                                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: item.type === "지출" ? "var(--moa-light)" : "#f0f0ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px", flexShrink: 0 }}>
                                                         {CATEGORY_EMOJI[item.category] || "📦"}
                                                     </div>
                                                     <div style={{ flex: 1, minWidth: 0 }}>
-                                                        <p style={{ margin: "0 0 2px", fontSize: "14px", fontWeight: "500", color: "#333", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.memo || "메모 없음"}</p>
-                                                        <p style={{ margin: 0, fontSize: "12px", color: "#bbb" }}>{item.category}</p>
+                                                        <p style={{ margin: "0 0 2px", fontSize: "14px", fontWeight: "500", color: "var(--moa-text)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.memo || "메모 없음"}</p>
+                                                        <p style={{ margin: 0, fontSize: "12px", color: "var(--moa-text-sub)" }}>{item.category}</p>
                                                     </div>
                                                     <div style={{ display: "flex", alignItems: "center", gap: "8px", flexShrink: 0 }}>
-                                                        <p style={{ margin: 0, fontSize: "15px", fontWeight: "700", color: item.type === "지출" ? "#F4A7B9" : "#7F77DD" }}>
+                                                        <p style={{ margin: 0, fontSize: "15px", fontWeight: "700", color: item.type === "지출" ? "var(--moa-primary)" : "#7F77DD" }}>
                                                             {item.type === "지출" ? "-" : "+"}{item.amount.toLocaleString()}원
                                                         </p>
-                                                        <button onClick={() => setEditItem({ ...item, amountStr: item.amount.toLocaleString() })} style={{ background: "none", border: "none", fontSize: "15px", cursor: "pointer", color: "#ccc", padding: 0 }}>✏️</button>
+                                                        <button onClick={() => setEditItem({ ...item, amountStr: item.amount.toLocaleString() })} style={{ background: "none", border: "none", fontSize: "15px", cursor: "pointer", color: "var(--moa-text-sub)", padding: 0 }}>✏️</button>
                                                     </div>
                                                 </div>
                                             ))}
@@ -640,10 +647,10 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
             {/* Slide-over or Central Overlay Card for Edit Actions */}
             {editItem && (
                 <div style={{ position: "fixed", inset: 0, zIndex: 300, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center" }} onClick={(e) => { if (e.target === e.currentTarget) setEditItem(null) }}>
-                    <div style={{ background: "white", borderRadius: "20px", padding: "28px", width: "480px", maxHeight: "85vh", overflowY: "auto", fontFamily: "inherit" }}>
+                    <div style={{ background: "var(--moa-bg-card)", borderRadius: "20px", padding: "28px", width: "480px", maxHeight: "85vh", overflowY: "auto", fontFamily: "inherit" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
                             <h3 style={{ margin: 0, fontSize: "18px" }}>✏️ 내역 수정</h3>
-                            <button onClick={() => setEditItem(null)} style={{ background: "none", border: "none", fontSize: "20px", cursor: "pointer", color: "#aaa" }}>✕</button>
+                            <button onClick={() => setEditItem(null)} style={{ background: "none", border: "none", fontSize: "20px", cursor: "pointer", color: "var(--moa-text-sub)" }}>✕</button>
                         </div>
                         <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
                             {["지출", "수입"].map(t => (
@@ -651,18 +658,18 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
                             ))}
                         </div>
                         <div style={{ marginBottom: "14px" }}>
-                            <label style={{ fontSize: "12px", color: "#888", display: "block", marginBottom: "6px" }}>날짜</label>
-                            <input type="date" value={editItem.date} onChange={e => setEditItem(prev => ({ ...prev, date: e.target.value }))} style={{ width: "100%", padding: "11px 14px", borderRadius: "10px", border: "1px solid #eee", fontSize: "14px", boxSizing: "border-box", fontFamily: "inherit", outline: "none", color: "#333" }} />
+                            <label style={{ fontSize: "12px", color: "var(--moa-text-sub)", display: "block", marginBottom: "6px" }}>날짜</label>
+                            <input type="date" value={editItem.date} onChange={e => setEditItem(prev => ({ ...prev, date: e.target.value }))} style={{ width: "100%", padding: "11px 14px", borderRadius: "10px", border: "1px solid #eee", fontSize: "14px", boxSizing: "border-box", fontFamily: "inherit", outline: "none", color: "var(--moa-text)" }} />
                         </div>
                         <div style={{ marginBottom: "14px" }}>
-                            <label style={{ fontSize: "12px", color: "#888", display: "block", marginBottom: "6px" }}>금액</label>
+                            <label style={{ fontSize: "12px", color: "var(--moa-text-sub)", display: "block", marginBottom: "6px" }}>금액</label>
                             <div style={{ position: "relative" }}>
-                                <input type="text" inputMode="numeric" value={editItem.amountStr} onChange={e => { const raw = e.target.value.replace(/,/g, ""); if (!/^\d*$/.test(raw)) return; setEditItem(prev => ({ ...prev, amountStr: raw ? parseInt(raw).toLocaleString() : "" })) }} style={{ width: "100%", padding: "11px 40px 11px 14px", borderRadius: "10px", border: "1px solid #eee", fontSize: "15px", boxSizing: "border-box", fontFamily: "inherit", outline: "none", color: "#333" }} />
-                                <span style={{ position: "absolute", right: "14px", top: "50%", transform: "translateY(-50%)", fontSize: "13px", color: "#aaa" }}>원</span>
+                                <input type="text" inputMode="numeric" value={editItem.amountStr} onChange={e => { const raw = e.target.value.replace(/,/g, ""); if (!/^\d*$/.test(raw)) return; setEditItem(prev => ({ ...prev, amountStr: raw ? parseInt(raw).toLocaleString() : "" })) }} style={{ width: "100%", padding: "11px 40px 11px 14px", borderRadius: "10px", border: "1px solid #eee", fontSize: "15px", boxSizing: "border-box", fontFamily: "inherit", outline: "none", color: "var(--moa-text)" }} />
+                                <span style={{ position: "absolute", right: "14px", top: "50%", transform: "translateY(-50%)", fontSize: "13px", color: "var(--moa-text-sub)" }}>원</span>
                             </div>
                         </div>
                         <div style={{ marginBottom: "14px" }}>
-                            <label style={{ fontSize: "12px", color: "#888", display: "block", marginBottom: "8px" }}>카테고리</label>
+                            <label style={{ fontSize: "12px", color: "var(--moa-text-sub)", display: "block", marginBottom: "8px" }}>카테고리</label>
                             <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "6px" }}>
                                 {(editItem.type === "수입" ? INCOME_CATEGORIES : CATEGORIES).map(cat => (
                                     <button key={cat.label} onClick={() => setEditItem(prev => ({ ...prev, category: cat.label }))} style={{ padding: "8px 4px", borderRadius: "10px", border: "none", background: editItem.category === cat.label ? accentColor : "#f5f5f5", color: editItem.category === cat.label ? "white" : "#555", fontSize: "10px", cursor: "pointer", fontFamily: "inherit", display: "flex", flexDirection: "column", alignItems: "center", gap: "3px" }}>
@@ -673,8 +680,8 @@ function HistoryPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddS
                             </div>
                         </div>
                         <div style={{ marginBottom: "20px" }}>
-                            <label style={{ fontSize: "12px", color: "#888", display: "block", marginBottom: "6px" }}>메모</label>
-                            <input type="text" value={editItem.memo || ""} onChange={e => setEditItem(prev => ({ ...prev, memo: e.target.value }))} placeholder="메모를 입력해줘요" style={{ width: "100%", padding: "11px 14px", borderRadius: "10px", border: "1px solid #eee", fontSize: "14px", boxSizing: "border-box", fontFamily: "inherit", outline: "none", color: "#333" }} />
+                            <label style={{ fontSize: "12px", color: "var(--moa-text-sub)", display: "block", marginBottom: "6px" }}>메모</label>
+                            <input type="text" value={editItem.memo || ""} onChange={e => setEditItem(prev => ({ ...prev, memo: e.target.value }))} placeholder="메모를 입력해줘요" style={{ width: "100%", padding: "11px 14px", borderRadius: "10px", border: "1px solid #eee", fontSize: "14px", boxSizing: "border-box", fontFamily: "inherit", outline: "none", color: "var(--moa-text)" }} />
                         </div>
                         <button onClick={handleEditSave} style={{ width: "100%", padding: "14px", borderRadius: "12px", background: accentColor, color: "white", border: "none", fontSize: "15px", fontWeight: "600", cursor: "pointer", fontFamily: "inherit", marginBottom: "12px" }}>저장하기</button>
                         <button onClick={() => handleDeleteClick(editItem.id)} style={{ width: "100%", padding: "14px", borderRadius: "12px", background: "none", color: "#ff6b6b", border: "1px solid #ffcdd2", fontSize: "15px", cursor: "pointer", fontFamily: "inherit" }}>🗑️ 삭제하기</button>

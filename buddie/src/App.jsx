@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useIsMobile } from "./hooks/useIsMobile"
 import LoginPage from "./pages/LoginPage"
 import MainPage from "./pages/MainPage"
@@ -11,12 +11,20 @@ import CharacterPage from "./pages/CharacterPage"
 import ChatPage from "./pages/ChatPage"
 import ProfilePage from "./pages/ProfilePage"
 import GamePage from "./pages/GamePage"
+import ThemeShopPage from "./pages/ThemeShopPage"
+import FriendsPage from "./pages/FriendsPage"
+import { THEMES, applyTheme, getActiveThemeId } from "./themes.js"
 
 function App() {
     const [page, setPage] = useState("login")
     const [prevPage, setPrevPage] = useState("main")
     const [userId, setUserId] = useState(null)
     const isMobile = useIsMobile()
+
+    useEffect(() => {
+        const saved = THEMES.find(t => t.id === getActiveThemeId())
+        if (saved) applyTheme(saved)
+    }, [])
 
     const handleLogin = () => {
         setUserId(localStorage.getItem("user_id"))
@@ -42,6 +50,8 @@ function App() {
         onChat: () => goTo("chat"),
         onProfile: () => goTo("profile"),
         onGame: () => goTo("game"),
+        onShop: () => goTo("shop"),
+        onFriends: () => goTo("friends"),
         onLogout: handleLogout,
         isMobile,
     }
@@ -86,6 +96,12 @@ function App() {
             )}
             {page === "game" && (
                 <GamePage {...nav} current="game" />
+            )}
+            {page === "shop" && (
+                <ThemeShopPage {...nav} current="shop" />
+            )}
+            {page === "friends" && (
+                <FriendsPage {...nav} current="friends" />
             )}
         </>
     )

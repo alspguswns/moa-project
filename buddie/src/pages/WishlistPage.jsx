@@ -4,12 +4,12 @@ import MobileBottomNav from "../components/MobileBottomNav"
 
 // 카테고리별 우선순위 배지 설정
 const PRIORITY_STYLES = {
-    1: { text: "1순위 ⭐⭐⭐", color: "#F4A7B9", bg: "#fff0f3" },
+    1: { text: "1순위 ⭐⭐⭐", color: "var(--moa-primary)", bg: "var(--moa-light)" },
     2: { text: "2순위 ⭐⭐", color: "#FFB347", bg: "#fffcf0" },
     3: { text: "3순위 ⭐", color: "#95A5A6", bg: "#f5f7f8" },
 }
 
-function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLogout, current, isMobile }) {
+function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onGame, onShop, onFriends, onLogout, current, isMobile }) {
     const userId = localStorage.getItem("user_id")
     const nickname = localStorage.getItem("nickname") || "사용자"
     const [items, setItems] = useState([])
@@ -151,6 +151,9 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
         { key: "analysis", icon: "📊", onClick: onAnalysis },
         { key: "wishlist", icon: "🛍️", onClick: onWishlist },
         { key: "chat", icon: "💬", onClick: onChat },
+        { key: "game", icon: "🎮", onClick: onGame },
+        { key: "shop", icon: "🎨", onClick: onShop },
+        { key: "friends", icon: "👥", onClick: onFriends },
         { key: "logout", icon: "🚪", onClick: () => {
                 setModalConfig({
                     isOpen: true,
@@ -174,9 +177,9 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
             height: isMobile ? "auto" : "100vh", minHeight: "100vh",
             width: "100vw",
             fontFamily: "'GriounPolice', cursive",
-            backgroundImage: `linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px)`,
+            backgroundImage: `linear-gradient(var(--moa-grid) 1px, transparent 1px), linear-gradient(90deg, var(--moa-grid) 1px, transparent 1px)`,
             backgroundSize: "28px 28px",
-            backgroundColor: "#f5f5f5",
+            backgroundColor: "var(--moa-bg)",
             overflow: isMobile ? "auto" : "hidden",
             boxSizing: "border-box"
         }}>
@@ -197,16 +200,16 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                     backdropFilter: "blur(2px)"
                 }}>
                     <div style={{
-                        background: "white",
+                        background: "var(--moa-bg-card)",
                         borderRadius: "20px",
                         padding: "24px",
                         width: "320px",
                         textAlign: "center",
                         boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
-                        border: "1px solid #ffd9e2"
+                        border: "1px solid var(--moa-border)"
                     }}>
                         <span style={{ fontSize: "36px", display: "block", marginBottom: "12px" }}>🐷</span>
-                        <p style={{ margin: "0 0 20px", fontSize: "15px", fontWeight: "600", color: "#333", lineHeight: "1.5" }}>
+                        <p style={{ margin: "0 0 20px", fontSize: "15px", fontWeight: "600", color: "var(--moa-text)", lineHeight: "1.5" }}>
                             {modalConfig.message}
                         </p>
                         <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
@@ -223,7 +226,7 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                                             fontSize: "13px",
                                             cursor: "pointer",
                                             fontWeight: "600",
-                                            color: "#555",
+                                            color: "var(--moa-text)",
                                             fontFamily: "inherit"
                                         }}
                                     >
@@ -236,7 +239,7 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                                         style={{
                                             flex: 1,
                                             padding: "10px",
-                                            background: "#F4A7B9",
+                                            background: "var(--moa-primary)",
                                             border: "none",
                                             borderRadius: "10px",
                                             fontSize: "13px",
@@ -255,7 +258,7 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                                     style={{
                                         width: "120px",
                                         padding: "10px",
-                                        background: "#F4A7B9",
+                                        background: "var(--moa-primary)",
                                         border: "none",
                                         borderRadius: "10px",
                                         fontSize: "13px",
@@ -280,7 +283,7 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                 left: 0,
                 width: "100%",
                 height: "64px",
-                background: "white",
+                background: "var(--moa-bg-card)",
                 borderBottom: "1px solid #eee",
                 zIndex: 200,
                 display: "flex",
@@ -291,16 +294,20 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
             }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }} onClick={onHome}>
                     <span style={{ fontSize: "28px" }}>🐷</span>
-                    <span style={{ fontSize: "22px", fontWeight: "700", color: "#F4A7B9" }}>MOA</span>
+                    <span style={{ fontSize: "22px", fontWeight: "700", color: "var(--moa-primary)" }}>MOA</span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
                     <span style={{ fontSize: "20px", cursor: "pointer" }}>🔔</span>
                     <div style={{ display: "flex", alignItems: "center", gap: "8px", background: "#f5f5f5", borderRadius: "20px", padding: "6px 12px" }}>
-                        <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "#F4A7B9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", color: "white" }}>
-                            {nickname[0]}
+                        <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "var(--moa-primary)", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", color: "white" }}>
+                            {localStorage.getItem("profileImg") ? (
+        <img src={localStorage.getItem("profileImg")} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }} onError={e => { e.target.style.display = "none" }} />
+    ) : (
+        nickname[0]
+    )}
                         </div>
-                        <span style={{ fontSize: "13px", color: "#333", fontWeight: "600" }}>{nickname}</span>
-                        <span style={{ fontSize: "11px", color: "#aaa" }}>▾</span>
+                        <span style={{ fontSize: "13px", color: "var(--moa-text)", fontWeight: "600" }}>{nickname}</span>
+                        <span style={{ fontSize: "11px", color: "var(--moa-text-sub)" }}>▾</span>
                     </div>
                 </div>
             </div>
@@ -313,7 +320,7 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                 left: 0,
                 width: "72px",
                 height: "calc(100vh - 64px)",
-                background: "white",
+                background: "var(--moa-bg-card)",
                 borderRight: "1px solid #eee",
                 display: "flex",
                 flexDirection: "column",
@@ -336,8 +343,8 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                             justifyContent: "center",
                             fontSize: "22px",
                             cursor: "pointer",
-                            background: current === item.key ? "#fff0f3" : "transparent",
-                            border: current === item.key ? "1.5px solid #F4A7B9" : "1.5px solid transparent",
+                            background: current === item.key ? "var(--moa-light)" : "transparent",
+                            border: current === item.key ? "1.5px solid var(--moa-primary)" : "1.5px solid transparent",
                             transition: "all 0.2s"
                         }}
                     >
@@ -364,7 +371,7 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                 {/* 헤더 타이틀 */}
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px", flexShrink: 0 }}>
                     <span style={{ fontSize: "24px" }}>🛍️</span>
-                    <span style={{ fontSize: "20px", fontWeight: "700", color: "#333" }}>위시리스트</span>
+                    <span style={{ fontSize: "20px", fontWeight: "700", color: "var(--moa-text)" }}>위시리스트</span>
                 </div>
 
                 {/* 2단 메인 레이아웃 (좌: 독립 스크롤 위시 목록, 우: 요약 통계 및 추가 폼) */}
@@ -386,7 +393,7 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                         minHeight: 0
                     }}>
                         <div style={{
-                            background: "white",
+                            background: "var(--moa-bg-card)",
                             borderRadius: "24px",
                             padding: "24px",
                             boxShadow: "0 8px 24px rgba(0,0,0,0.04)",
@@ -397,8 +404,8 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                             overflow: "hidden"
                         }}>
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexShrink: 0 }}>
-                                <span style={{ fontSize: "14px", fontWeight: "700", color: "#111" }}>📝 위시 목록</span>
-                                <span style={{ fontSize: "11px", color: "#aaa" }}></span>
+                                <span style={{ fontSize: "14px", fontWeight: "700", color: "var(--moa-text)" }}>📝 위시 목록</span>
+                                <span style={{ fontSize: "11px", color: "var(--moa-text-sub)" }}></span>
                             </div>
 
                             {/* 세로 스크롤 영역 */}
@@ -410,12 +417,12 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                                 {loading ? (
                                     <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%" }}>
                                         <span style={{ fontSize: "36px", animation: "bounce 1s infinite" }}>🐷</span>
-                                        <p style={{ color: "#aaa", fontSize: "13px", marginTop: "12px" }}>위시 목록을 정리하는 중...</p>
+                                        <p style={{ color: "var(--moa-text-sub)", fontSize: "13px", marginTop: "12px" }}>위시 목록을 정리하는 중...</p>
                                     </div>
                                 ) : items.length === 0 ? (
                                     <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%", gap: "12px" }}>
                                         <span style={{ fontSize: "48px" }}>🛍️</span>
-                                        <p style={{ color: "#aaa", fontSize: "14px", textAlign: "center" }}>
+                                        <p style={{ color: "var(--moa-text-sub)", fontSize: "14px", textAlign: "center" }}>
                                             위시리스트가 텅 비어있어요!<br />갖고 싶은 소망을 채워볼까요?
                                         </p>
                                     </div>
@@ -453,14 +460,14 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                                                                 {badge.text}
                                                             </span>
                                                         </div>
-                                                        <h4 style={{ margin: "0 0 4px", fontSize: "15px", color: "#333", fontWeight: "700", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                                        <h4 style={{ margin: "0 0 4px", fontSize: "15px", color: "var(--moa-text)", fontWeight: "700", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                                                             {item.name}
                                                         </h4>
-                                                        <p style={{ margin: 0, fontSize: "14px", color: "#F4A7B9", fontWeight: "800" }}>
+                                                        <p style={{ margin: 0, fontSize: "14px", color: "var(--moa-primary)", fontWeight: "800" }}>
                                                             {item.price.toLocaleString()}원
                                                         </p>
                                                         {item.memo && (
-                                                            <p style={{ margin: "6px 0 0", fontSize: "12px", color: "#999", lineHeight: "1.4" }}>
+                                                            <p style={{ margin: "6px 0 0", fontSize: "12px", color: "var(--moa-text-sub)", lineHeight: "1.4" }}>
                                                                 💭 {item.memo}
                                                             </p>
                                                         )}
@@ -473,7 +480,7 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                                                             border: "none",
                                                             fontSize: "18px",
                                                             cursor: "pointer",
-                                                            color: "#bbb",
+                                                            color: "var(--moa-text-sub)",
                                                             padding: "8px",
                                                             borderRadius: "8px",
                                                             display: "flex",
@@ -481,7 +488,7 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                                                             justifyContent: "center",
                                                             transition: "all 0.2s"
                                                         }}
-                                                        onMouseOver={e => { e.currentTarget.style.background = "#fff0f3"; e.currentTarget.style.color = "#ff6b6b" }}
+                                                        onMouseOver={e => { e.currentTarget.style.background = "var(--moa-light)"; e.currentTarget.style.color = "#ff6b6b" }}
                                                         onMouseOut={e => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = "#bbb" }}
                                                         title="위시리스트 삭제"
                                                     >
@@ -506,24 +513,24 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
 
                         {/* 위시 요약 카드 */}
                         <div style={{
-                            background: "white",
+                            background: "var(--moa-bg-card)",
                             borderRadius: "24px",
                             padding: "20px 24px",
                             boxShadow: "0 8px 24px rgba(0,0,0,0.04)",
                             border: "1px solid #f0f0f0",
                             flexShrink: 0
                         }}>
-                            <p style={{ margin: "0 0 12px", fontSize: "14px", fontWeight: "700", color: "#111" }}>📊 나의 위시 요약</p>
+                            <p style={{ margin: "0 0 12px", fontSize: "14px", fontWeight: "700", color: "var(--moa-text)" }}>📊 나의 위시 요약</p>
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                                 <div style={{ background: "#fafafa", borderRadius: "16px", padding: "14px", border: "1px solid #f1f1f1", textAlign: "center" }}>
-                                    <p style={{ margin: "0 0 4px", fontSize: "11px", color: "#999" }}>위시 아이템</p>
-                                    <p style={{ margin: 0, fontSize: "18px", fontWeight: "700", color: "#555" }}>
+                                    <p style={{ margin: "0 0 4px", fontSize: "11px", color: "var(--moa-text-sub)" }}>위시 아이템</p>
+                                    <p style={{ margin: 0, fontSize: "18px", fontWeight: "700", color: "var(--moa-text)" }}>
                                         {totalWishCount}개
                                     </p>
                                 </div>
-                                <div style={{ background: "#fff0f3", borderRadius: "16px", padding: "14px", border: "1px solid #ffd9e2", textAlign: "center" }}>
-                                    <p style={{ margin: "0 0 4px", fontSize: "11px", color: "#F4A7B9" }}>필요한 예산</p>
-                                    <p style={{ margin: 0, fontSize: "18px", fontWeight: "700", color: "#111" }}>
+                                <div style={{ background: "var(--moa-light)", borderRadius: "16px", padding: "14px", border: "1px solid var(--moa-border)", textAlign: "center" }}>
+                                    <p style={{ margin: "0 0 4px", fontSize: "11px", color: "var(--moa-primary)" }}>필요한 예산</p>
+                                    <p style={{ margin: 0, fontSize: "18px", fontWeight: "700", color: "var(--moa-text)" }}>
                                         {totalWishPrice.toLocaleString()}원
                                     </p>
                                 </div>
@@ -532,7 +539,7 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
 
                         {/* 새 위시 추가 폼 입력 상자 */}
                         <div style={{
-                            background: "white",
+                            background: "var(--moa-bg-card)",
                             borderRadius: "24px",
                             padding: "24px",
                             boxShadow: "0 8px 24px rgba(0,0,0,0.04)",
@@ -544,10 +551,10 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                             overflowY: "auto"
                         }}>
                             <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-                                <p style={{ margin: "0 0 2px", fontSize: "14px", fontWeight: "700", color: "#111" }}>➕ 새 위시 추가하기</p>
+                                <p style={{ margin: "0 0 2px", fontSize: "14px", fontWeight: "700", color: "var(--moa-text)" }}>➕ 새 위시 추가하기</p>
 
                                 <div>
-                                    <label style={{ fontSize: "11px", color: "#888", display: "block", marginBottom: "6px" }}>위시 이름</label>
+                                    <label style={{ fontSize: "11px", color: "var(--moa-text-sub)", display: "block", marginBottom: "6px" }}>위시 이름</label>
                                     <input
                                         type="text"
                                         placeholder="어떤 것을 갖고 싶나요?"
@@ -558,7 +565,7 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                                 </div>
 
                                 <div>
-                                    <label style={{ fontSize: "11px", color: "#888", display: "block", marginBottom: "6px" }}>가격 (원)</label>
+                                    <label style={{ fontSize: "11px", color: "var(--moa-text-sub)", display: "block", marginBottom: "6px" }}>가격 (원)</label>
                                     <div style={{ position: "relative" }}>
                                         <input
                                             type="text"
@@ -571,12 +578,12 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                                             }}
                                             style={{ ...inputStyle, paddingRight: "40px", marginBottom: 0 }}
                                         />
-                                        <span style={{ position: "absolute", right: "14px", top: "50%", transform: "translateY(-50%)", fontSize: "13px", color: "#aaa" }}>원</span>
+                                        <span style={{ position: "absolute", right: "14px", top: "50%", transform: "translateY(-50%)", fontSize: "13px", color: "var(--moa-text-sub)" }}>원</span>
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label style={{ fontSize: "11px", color: "#888", display: "block", marginBottom: "6px" }}>우선순위</label>
+                                    <label style={{ fontSize: "11px", color: "var(--moa-text-sub)", display: "block", marginBottom: "6px" }}>우선순위</label>
                                     <select
                                         value={priority}
                                         onChange={e => setPriority(e.target.value)}
@@ -589,7 +596,7 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                                 </div>
 
                                 <div>
-                                    <label style={{ fontSize: "11px", color: "#888", display: "block", marginBottom: "6px" }}>한마디 메모 (선택)</label>
+                                    <label style={{ fontSize: "11px", color: "var(--moa-text-sub)", display: "block", marginBottom: "6px" }}>한마디 메모 (선택)</label>
                                     <input
                                         type="text"
                                         placeholder="구매 목적이나 다짐을 기록해보세요"
@@ -606,7 +613,7 @@ function WishlistPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onLog
                                     width: "100%",
                                     padding: "14px",
                                     borderRadius: "14px",
-                                    background: "#F4A7B9",
+                                    background: "var(--moa-primary)",
                                     color: "white",
                                     border: "none",
                                     fontSize: "14px",
@@ -639,7 +646,7 @@ const inputStyle = {
     marginBottom: "14px",
     fontFamily: "inherit",
     outline: "none",
-    color: "#333"
+    color: "var(--moa-text)"
 }
 
 export default WishlistPage

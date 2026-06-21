@@ -78,7 +78,7 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                 setModalConfig({
                     isOpen: true,
                     type: "confirm",
-                    message: `[${name}]의 성격 튜닝을 무사히 마쳤어요! 🎨✨\n지금 바로 피그톡으로 돌아가 대화를 나눠보시겠어요?`,
+                    message: `[${name}]의 성격 튜닝을 무사히 마쳤어요! 🎨✨\n지금 바로 톡으로 돌아가 대화를 나눠보시겠어요?`,
                     confirmLabel: "예, 대화할래요",
                     cancelLabel: "여기 더 있을래요",
                     onConfirm: () => {
@@ -140,9 +140,9 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
             height: isMobile ? "auto" : "100vh", minHeight: "100vh",
             width: "100vw",
             fontFamily: "'GriounPolice', cursive",
-            backgroundImage: `linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px)`,
+            backgroundImage: `linear-gradient(var(--moa-grid) 1px, transparent 1px), linear-gradient(90deg, var(--moa-grid) 1px, transparent 1px)`,
             backgroundSize: "28px 28px",
-            backgroundColor: "#f5f5f5",
+            backgroundColor: "var(--moa-bg)",
             overflow: isMobile ? "auto" : "hidden",
             boxSizing: "border-box"
         }}>
@@ -163,16 +163,16 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                     backdropFilter: "blur(2px)"
                 }}>
                     <div style={{
-                        background: "white",
+                        background: "var(--moa-bg-card)",
                         borderRadius: "20px",
                         padding: "24px",
                         width: "320px",
                         textAlign: "center",
                         boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
-                        border: "1px solid #ffd9e2"
+                        border: "1px solid var(--moa-border)"
                     }}>
                         <span style={{ fontSize: "36px", display: "block", marginBottom: "12px" }}>🐷</span>
-                        <p style={{ margin: "0 0 20px", fontSize: "15px", fontWeight: "600", color: "#333", lineHeight: "1.5", whiteSpace: "pre-line" }}>
+                        <p style={{ margin: "0 0 20px", fontSize: "15px", fontWeight: "600", color: "var(--moa-text)", lineHeight: "1.5", whiteSpace: "pre-line" }}>
                             {modalConfig.message}
                         </p>
                         <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
@@ -191,7 +191,7 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                                             fontSize: "13px",
                                             cursor: "pointer",
                                             fontWeight: "600",
-                                            color: "#555",
+                                            color: "var(--moa-text)",
                                             fontFamily: "inherit"
                                         }}
                                     >
@@ -204,7 +204,7 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                                         style={{
                                             flex: 1,
                                             padding: "10px",
-                                            background: "#F4A7B9",
+                                            background: "var(--moa-primary)",
                                             border: "none",
                                             borderRadius: "10px",
                                             fontSize: "13px",
@@ -226,7 +226,7 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                                     style={{
                                         width: "120px",
                                         padding: "10px",
-                                        background: "#F4A7B9",
+                                        background: "var(--moa-primary)",
                                         border: "none",
                                         borderRadius: "10px",
                                         fontSize: "13px",
@@ -251,7 +251,7 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                 left: 0,
                 width: "100%",
                 height: "64px",
-                background: "white",
+                background: "var(--moa-bg-card)",
                 borderBottom: "1px solid #eee",
                 zIndex: 200,
                 display: "flex",
@@ -262,7 +262,7 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
             }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }} onClick={onHome}>
                     <span style={{ fontSize: "28px" }}>🐷</span>
-                    <span style={{ fontSize: "22px", fontWeight: "700", color: "#F4A7B9" }}>MOA</span>
+                    <span style={{ fontSize: "22px", fontWeight: "700", color: "var(--moa-primary)" }}>MOA</span>
                 </div>
 
                 {/* 우측 알림 및 컨텍스츄얼 프로필 영역 */}
@@ -276,22 +276,26 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                             display: "flex",
                             alignItems: "center",
                             gap: "8px",
-                            background: isDropdownOpen ? "#fff0f3" : "#f5f5f5",
+                            background: isDropdownOpen ? "var(--moa-light)" : "#f5f5f5",
                             borderRadius: "20px",
                             padding: "6px 12px",
                             cursor: "pointer",
                             userSelect: "none",
-                            border: isDropdownOpen ? "1px solid #ffd9e2" : "1px solid transparent",
+                            border: isDropdownOpen ? "1px solid var(--moa-border)" : "1px solid transparent",
                             transition: "all 0.2s"
                         }}
                     >
-                        <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "#F4A7B9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", color: "white" }}>
-                            {nickname[0]}
+                        <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "var(--moa-primary)", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", color: "white" }}>
+                            {localStorage.getItem("profileImg") ? (
+        <img src={localStorage.getItem("profileImg")} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }} onError={e => { e.target.style.display = "none" }} />
+    ) : (
+        nickname[0]
+    )}
                         </div>
-                        <span style={{ fontSize: "13px", color: "#333", fontWeight: "600" }}>{nickname}</span>
+                        <span style={{ fontSize: "13px", color: "var(--moa-text)", fontWeight: "600" }}>{nickname}</span>
                         <span style={{
                             fontSize: "11px",
-                            color: "#aaa",
+                            color: "var(--moa-text-sub)",
                             transform: isDropdownOpen ? "rotate(180deg)" : "rotate(0deg)",
                             transition: "transform 0.2s",
                             display: "inline-block"
@@ -307,7 +311,7 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                             top: "52px",
                             right: 0,
                             width: "180px",
-                            background: "white",
+                            background: "var(--moa-bg-card)",
                             borderRadius: "14px",
                             boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
                             border: "1px solid #f0f0f0",
@@ -327,14 +331,14 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                                 style={{
                                     padding: "12px 16px",
                                     fontSize: "13px",
-                                    color: "#444",
+                                    color: "var(--moa-text)",
                                     cursor: "pointer",
                                     display: "flex",
                                     alignItems: "center",
                                     gap: "8px",
                                     transition: "background 0.15s"
                                 }}
-                                onMouseOver={e => e.currentTarget.style.background = "#fff0f3"}
+                                onMouseOver={e => e.currentTarget.style.background = "var(--moa-light)"}
                                 onMouseOut={e => e.currentTarget.style.background = "transparent"}
                             >
                                 <span>👤</span> 프로필 / 닉네임 수정
@@ -357,7 +361,7 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                                     gap: "8px",
                                     transition: "background 0.15s"
                                 }}
-                                onMouseOver={e => e.currentTarget.style.background = "#fff0f3"}
+                                onMouseOver={e => e.currentTarget.style.background = "var(--moa-light)"}
                                 onMouseOut={e => e.currentTarget.style.background = "transparent"}
                             >
                                 <span>🚪</span> 로그아웃
@@ -375,7 +379,7 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                 left: 0,
                 width: "72px",
                 height: "calc(100vh - 64px)",
-                background: "white",
+                background: "var(--moa-bg-card)",
                 borderRight: "1px solid #eee",
                 display: "flex",
                 flexDirection: "column",
@@ -398,8 +402,8 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                             justifyContent: "center",
                             fontSize: "22px",
                             cursor: "pointer",
-                            background: current === item.key ? "#fff0f3" : "transparent",
-                            border: current === item.key ? "1.5px solid #F4A7B9" : "1.5px solid transparent",
+                            background: current === item.key ? "var(--moa-light)" : "transparent",
+                            border: current === item.key ? "1.5px solid var(--moa-primary)" : "1.5px solid transparent",
                             transition: "all 0.2s"
                         }}
                     >
@@ -433,14 +437,14 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                             fontSize: "24px",
                             cursor: "pointer",
                             marginRight: "4px",
-                            color: "#888",
+                            color: "var(--moa-text-sub)",
                             display: "flex",
                             alignItems: "center"
                         }}
                     >
                         ←
                     </button>
-                    <span style={{ fontSize: "20px", fontWeight: "700", color: "#333" }}>AI 캐릭터 성격 설정</span>
+                    <span style={{ fontSize: "20px", fontWeight: "700", color: "var(--moa-text)" }}>AI 캐릭터 성격 설정</span>
                 </div>
 
                 {/* 2단 메인 레이아웃 (좌: 실시간 렌더 프로필, 우: 설정 변경 폼) */}
@@ -462,7 +466,7 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                         minHeight: 0
                     }}>
                         <div style={{
-                            background: "white",
+                            background: "var(--moa-bg-card)",
                             borderRadius: "24px",
                             padding: "32px 24px",
                             boxShadow: "0 8px 24px rgba(0,0,0,0.04)",
@@ -475,15 +479,15 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                             textAlign: "center"
                         }}>
                             {loading ? (
-                                <div style={{ fontSize: "14px", color: "#aaa" }}>동기화 로딩 중...</div>
+                                <div style={{ fontSize: "14px", color: "var(--moa-text-sub)" }}>동기화 로딩 중...</div>
                             ) : (
                                 <>
                                     <div style={{
                                         width: "120px",
                                         height: "120px",
                                         borderRadius: "50%",
-                                        background: "#fff0f3",
-                                        border: "4px solid #F4A7B9",
+                                        background: "var(--moa-light)",
+                                        border: "4px solid var(--moa-primary)",
                                         boxShadow: "0 8px 20px rgba(244,167,185,0.3)",
                                         display: "flex",
                                         alignItems: "center",
@@ -497,17 +501,17 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                                         ) : "🐷"}
                                     </div>
 
-                                    <h3 style={{ margin: "0 0 6px", fontSize: "20px", fontWeight: "800", color: "#333" }}>
+                                    <h3 style={{ margin: "0 0 6px", fontSize: "20px", fontWeight: "800", color: "var(--moa-text)" }}>
                                         {name || "MOA"}
                                     </h3>
 
                                     <div style={{
-                                        background: "#fff0f3",
-                                        border: "1px solid #ffd9e2",
+                                        background: "var(--moa-light)",
+                                        border: "1px solid var(--moa-border)",
                                         padding: "4px 14px",
                                         borderRadius: "100px",
                                         fontSize: "12px",
-                                        color: "#F4A7B9",
+                                        color: "var(--moa-primary)",
                                         fontWeight: "700",
                                         marginBottom: "24px"
                                     }}>
@@ -522,7 +526,7 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                                         paddingLeft: "12px",
                                         paddingRight: "12px"
                                     }}>
-                                        <p style={{ margin: "0 0 8px", fontSize: "11px", color: "#aaa" }}>지정된 추가 성격 지침</p>
+                                        <p style={{ margin: "0 0 8px", fontSize: "11px", color: "var(--moa-text-sub)" }}>지정된 추가 성격 지침</p>
                                         <p style={{
                                             margin: 0,
                                             fontSize: "13px",
@@ -546,7 +550,7 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                         minHeight: 0
                     }}>
                         <div style={{
-                            background: "white",
+                            background: "var(--moa-bg-card)",
                             borderRadius: "24px",
                             padding: "32px",
                             boxShadow: "0 8px 24px rgba(0,0,0,0.04)",
@@ -558,10 +562,10 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                             overflowY: "auto"
                         }}>
                             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                                <p style={{ margin: "0 0 4px", fontSize: "14.5px", fontWeight: "700", color: "#333" }}>⚙️ 세부 세팅 튜닝하기</p>
+                                <p style={{ margin: "0 0 4px", fontSize: "14.5px", fontWeight: "700", color: "var(--moa-text)" }}>⚙️ 세부 세팅 튜닝하기</p>
 
                                 <div>
-                                    <label style={{ fontSize: "12px", color: "#888", display: "block", marginBottom: "6px" }}>AI 이름</label>
+                                    <label style={{ fontSize: "12px", color: "var(--moa-text-sub)", display: "block", marginBottom: "6px" }}>AI 이름</label>
                                     <input
                                         type="text"
                                         value={name}
@@ -572,7 +576,7 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                                 </div>
 
                                 <div>
-                                    <label style={{ fontSize: "12px", color: "#888", display: "block", marginBottom: "6px" }}>말투 스타일</label>
+                                    <label style={{ fontSize: "12px", color: "var(--moa-text-sub)", display: "block", marginBottom: "6px" }}>말투 스타일</label>
                                     <select
                                         value={style}
                                         onChange={e => setStyle(e.target.value)}
@@ -588,7 +592,7 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                                 </div>
 
                                 <div>
-                                    <label style={{ fontSize: "12px", color: "#888", display: "block", marginBottom: "6px" }}>프로필 사진 이미지 URL</label>
+                                    <label style={{ fontSize: "12px", color: "var(--moa-text-sub)", display: "block", marginBottom: "6px" }}>프로필 사진 이미지 URL</label>
                                     <input
                                         type="text"
                                         value={profileUrl}
@@ -599,7 +603,7 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                                 </div>
 
                                 <div>
-                                    <label style={{ fontSize: "12px", color: "#888", display: "block", marginBottom: "6px" }}>추가 프롬프트 성격 묘사 (선택)</label>
+                                    <label style={{ fontSize: "12px", color: "var(--moa-text-sub)", display: "block", marginBottom: "6px" }}>추가 프롬프트 성격 묘사 (선택)</label>
                                     <textarea
                                         value={systemPrompt}
                                         onChange={e => setSystemPrompt(e.target.value)}
@@ -619,7 +623,7 @@ function CharacterPage({ onBack, onHome, onHistory, onAnalysis, onWishlist, onCh
                                     width: "100%",
                                     padding: "16px",
                                     borderRadius: "14px",
-                                    background: "#F4A7B9",
+                                    background: "var(--moa-primary)",
                                     color: "white",
                                     border: "none",
                                     fontSize: "15px",
@@ -653,7 +657,7 @@ const inputStyle = {
     fontFamily: "inherit",
     outline: "none",
     background: "#fafafa",
-    color: "#333",
+    color: "var(--moa-text)",
     transition: "border-color 0.2s"
 }
 

@@ -60,12 +60,12 @@ function SignupPage({ onSignup, onBack }) {
             linear-gradient(#e0e0e0 1px, transparent 1px),
              linear-gradient(90deg, #e0e0e0 1px, transparent 1px)`,
             backgroundSize: "28px 28px",
-            backgroundColor: "#f5f5f5",
+            backgroundColor: "var(--moa-bg)",
             fontFamily: "'GriounPolice', cursive",
             boxSizing: "border-box"
         }}>
             <div style={{
-                background: "white",
+                background: "var(--moa-bg-card)",
                 borderRadius: "24px",
                 padding: "40px 28px",
                 width: "min(360px, calc(100vw - 32px))",
@@ -74,8 +74,8 @@ function SignupPage({ onSignup, onBack }) {
             }}>
                 <div style={{ textAlign: "center", marginBottom: "28px" }}>
                     <div style={{ fontSize: "56px", lineHeight: 1 }}>🐷</div>
-                    <p style={{ margin: "8px 0 2px", fontSize: "12px", color: "#F4A7B9" }}>회원가입</p>
-                    <h1 style={{ margin: 0, fontSize: "36px", fontWeight: "700", color: "#F4A7B9", letterSpacing: "4px" }}>MOA</h1>
+                    <p style={{ margin: "8px 0 2px", fontSize: "12px", color: "var(--moa-primary)" }}>회원가입</p>
+                    <h1 style={{ margin: 0, fontSize: "36px", fontWeight: "700", color: "var(--moa-primary)", letterSpacing: "4px" }}>MOA</h1>
                 </div>
 
                 <input
@@ -108,7 +108,7 @@ function SignupPage({ onSignup, onBack }) {
 
                 <p
                     onClick={onBack}
-                    style={{ textAlign: "center", fontSize: "12px", color: "#aaa", marginTop: "16px", cursor: "pointer" }}
+                    style={{ textAlign: "center", fontSize: "12px", color: "var(--moa-text-sub)", marginTop: "16px", cursor: "pointer" }}
                 >
                     로그인으로 돌아가기
                 </p>
@@ -124,7 +124,7 @@ const inputStyle = {
     border: "none",
     background: "#f0f0f0",
     fontSize: "14px",
-    color: "#333",
+    color: "var(--moa-text)",
     boxSizing: "border-box",
     marginBottom: "10px",
     outline: "none",
@@ -135,7 +135,7 @@ const buttonStyle = {
     width: "100%",
     padding: "14px",
     borderRadius: "10px",
-    background: "#F4A7B9",
+    background: "var(--moa-primary)",
     color: "white",
     border: "none",
     fontSize: "16px",

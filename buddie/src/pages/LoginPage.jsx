@@ -37,7 +37,7 @@ function LoginPage({ onLogin, onSignup }) {
             width: "100vw",
             minHeight: "100vh",
             fontFamily: "'GriounPolice', cursive",
-            backgroundColor: "#f5f5f5",
+            backgroundColor: "var(--moa-bg)",
             display: "flex",
             flexDirection: "column"
         }}>
@@ -55,7 +55,7 @@ function LoginPage({ onLogin, onSignup }) {
             }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                     <div style={{ fontSize: isMobile ? "28px" : "36px" }}>🐷</div>
-                    <h1 style={{ margin: 0, fontSize: isMobile ? "22px" : "28px", color: "#F4A7B9" }}>MOA</h1>
+                    <h1 style={{ margin: 0, fontSize: isMobile ? "22px" : "28px", color: "var(--moa-primary)" }}>MOA</h1>
                 </div>
                 {!isMobile && (
                     <nav style={{ display: "flex", gap: "24px", fontSize: "14px", fontWeight: 500 }}>
@@ -70,12 +70,12 @@ function LoginPage({ onLogin, onSignup }) {
                     <div style={{ display: "flex", gap: "12px" }}>
                         <button style={{
                             padding: "6px 14px", borderRadius: "6px",
-                            border: "1px solid #F4A7B9", background: "white",
-                            color: "#F4A7B9", cursor: "pointer", fontWeight: 600
+                            border: "1px solid var(--moa-primary)", background: "var(--moa-bg-card)",
+                            color: "var(--moa-primary)", cursor: "pointer", fontWeight: 600
                         }}>영업팀 문의</button>
                         <button style={{
                             padding: "6px 14px", borderRadius: "6px",
-                            border: "none", background: "#F4A7B9",
+                            border: "none", background: "var(--moa-primary)",
                             color: "white", cursor: "pointer", fontWeight: 600
                         }}>MOA 시작하기</button>
                     </div>
@@ -107,10 +107,10 @@ function LoginPage({ onLogin, onSignup }) {
                     <div style={{ textAlign: "center", marginBottom: "24px" }}>
                         <div style={{ fontSize: "64px", marginBottom: "12px" }}>🐷</div>
                         <h2 style={{
-                            fontSize: "24px", fontWeight: 700, color: "#F4A7B9",
+                            fontSize: "24px", fontWeight: 700, color: "var(--moa-primary)",
                             margin: "0 0 8px"
                         }}>나의 소비를 한 눈에,</h2>
-                        <p style={{ fontSize: "14px", color: "#555", margin: 0 }}>
+                        <p style={{ fontSize: "14px", color: "var(--moa-text)", margin: 0 }}>
                             복잡한 소비내역은 잊으세요.
                         </p>
                     </div>
@@ -127,13 +127,13 @@ function LoginPage({ onLogin, onSignup }) {
                     {!isMobile && (
                         <>
                             <h2 style={{
-                                fontSize: "28px", fontWeight: 700, color: "#F4A7B9",
+                                fontSize: "28px", fontWeight: 700, color: "var(--moa-primary)",
                                 textAlign: "center", marginBottom: "12px"
                             }}>
                                 나의 소비를 한 눈에,
                             </h2>
                             <p style={{
-                                fontSize: "16px", color: "#555",
+                                fontSize: "16px", color: "var(--moa-text)",
                                 textAlign: "center", marginBottom: "36px"
                             }}>
                                 복잡한 소비내역은 잊으세요.
@@ -142,7 +142,7 @@ function LoginPage({ onLogin, onSignup }) {
                     )}
 
                     <p style={{
-                        fontSize: "16px", color: "#555",
+                        fontSize: "16px", color: "var(--moa-text)",
                         textAlign: "left", width: "100%", marginBottom: "10px"
                     }}>이메일</p>
                     <input type="email" placeholder="이메일" value={email}
@@ -155,7 +155,7 @@ function LoginPage({ onLogin, onSignup }) {
                         }} />
 
                     <p style={{
-                        fontSize: "16px", color: "#555",
+                        fontSize: "16px", color: "var(--moa-text)",
                         textAlign: "left", width: "100%", marginBottom: "10px"
                     }}>비밀번호</p>
                     <input type="password" placeholder="비밀번호" value={password}
@@ -170,14 +170,14 @@ function LoginPage({ onLogin, onSignup }) {
 
                     <button onClick={handleLogin} style={{
                         width: "100%", padding: "15px", borderRadius: "8px",
-                        background: "#F4A7B9", color: "white", border: "none",
+                        background: "var(--moa-primary)", color: "white", border: "none",
                         fontWeight: 700, marginBottom: "22px", cursor: "pointer",
                         fontSize: "15px", fontFamily: "'GriounPolice', cursive"
                     }}>로그인</button>
 
                     <div style={{ width: "100%", display: "flex", alignItems: "center", gap: "12px", marginBottom: "22px" }}>
                         <div style={{ flex: 1, height: "1px", background: "#e5e5e5" }} />
-                        <span style={{ fontSize: "13px", color: "#bbb" }}>또는</span>
+                        <span style={{ fontSize: "13px", color: "var(--moa-text-sub)" }}>또는</span>
                         <div style={{ flex: 1, height: "1px", background: "#e5e5e5" }} />
                     </div>
 
@@ -188,9 +188,9 @@ function LoginPage({ onLogin, onSignup }) {
                         fontFamily: "'GriounPolice', cursive"
                     }}>● 카카오로 시작하기</button>
 
-                    <p style={{ textAlign: "center", fontSize: "12px", color: "#aaa", marginTop: "20px" }}>
+                    <p style={{ textAlign: "center", fontSize: "12px", color: "var(--moa-text-sub)", marginTop: "20px" }}>
                         계정이 없으신가요?{" "}
-                        <span onClick={onSignup} style={{ color: "#F4A7B9", cursor: "pointer", fontWeight: 700 }}>
+                        <span onClick={onSignup} style={{ color: "var(--moa-primary)", cursor: "pointer", fontWeight: 700 }}>
                             회원가입
                         </span>
                     </p>

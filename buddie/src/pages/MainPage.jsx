@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { API } from "../config.js"
 import MobileBottomNav from "../components/MobileBottomNav"
 
-function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpend, onLogout, onProfile, onGame, userId: propUserId, current, isMobile }) {    const nickname = localStorage.getItem("nickname") || "사용자"
+function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpend, onLogout, onProfile, onGame, onShop, onFriends, userId: propUserId, current, isMobile }) {    const nickname = localStorage.getItem("nickname") || "사용자"
     const [transactions, setTransactions] = useState([])
     const [totalIncome, setTotalIncome] = useState(0)
     const [totalExpense, setTotalExpense] = useState(0)
@@ -99,6 +99,8 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
         { key: "wishlist", icon: "🛍️", onClick: onWishlist },
         { key: "chat", icon: "💬", onClick: onChat },
         { key: "game", icon: "🎮", onClick: onGame },
+        { key: "shop", icon: "🎨", onClick: onShop },
+        { key: "friends", icon: "👥", onClick: onFriends },
         { key: "logout", icon: "🚪", onClick: onLogout },
     ]
 
@@ -109,12 +111,9 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
             minHeight: "100vh",
             width: "100vw",
             fontFamily: "'Pretendard', -apple-system, 'GriounPolice', sans-serif",
-            backgroundImage: `
-                linear-gradient(#e0e0e0 1px, transparent 1px),
-                linear-gradient(90deg, #e0e0e0 1px, transparent 1px)
-            `,
+            backgroundImage: `linear-gradient(var(--moa-grid) 1px, transparent 1px), linear-gradient(90deg, var(--moa-grid) 1px, transparent 1px)`,
             backgroundSize: "28px 28px",
-            backgroundColor: "#f5f5f5",
+            backgroundColor: "var(--moa-bg)",
             overflow: isMobile ? "auto" : "hidden",
             boxSizing: "border-box"
         }}>
@@ -135,16 +134,16 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                     backdropFilter: "blur(2px)"
                 }}>
                     <div style={{
-                        background: "white",
+                        background: "var(--moa-bg-card)",
                         borderRadius: "20px",
                         padding: "24px",
                         width: "320px",
                         textAlign: "center",
                         boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
-                        border: "1px solid #ffd9e2"
+                        border: "1px solid var(--moa-border)"
                     }}>
                         <span style={{ fontSize: "36px", display: "block", marginBottom: "12px" }}>🐷</span>
-                        <p style={{ margin: "0 0 20px", fontSize: "15px", fontWeight: "600", color: "#333", lineHeight: "1.5" }}>
+                        <p style={{ margin: "0 0 20px", fontSize: "15px", fontWeight: "600", color: "var(--moa-text)", lineHeight: "1.5" }}>
                             {modalConfig.message}
                         </p>
                         <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
@@ -161,7 +160,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                             fontSize: "13px",
                                             cursor: "pointer",
                                             fontWeight: "600",
-                                            color: "#555"
+                                            color: "var(--moa-text)"
                                         }}
                                     >
                                         취소
@@ -171,7 +170,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                         style={{
                                             flex: 1,
                                             padding: "10px",
-                                            background: "#F4A7B9",
+                                            background: "var(--moa-primary)",
                                             border: "none",
                                             borderRadius: "10px",
                                             fontSize: "13px",
@@ -189,7 +188,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                     style={{
                                         width: "100px",
                                         padding: "10px",
-                                        background: "#F4A7B9",
+                                        background: "var(--moa-primary)",
                                         border: "none",
                                         borderRadius: "10px",
                                         fontSize: "13px",
@@ -214,7 +213,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                 left: 0,
                 width: "100%",
                 height: "64px",
-                background: "white",
+                background: "var(--moa-bg-card)",
                 borderBottom: "1px solid #eee",
                 zIndex: 200,
                 display: "flex",
@@ -233,7 +232,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                     <span style={{
                         fontSize: "22px",
                         fontWeight: "700",
-                        color: "#F4A7B9"
+                        color: "var(--moa-primary)"
                     }}>
                         MOA
                     </span>
@@ -260,7 +259,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                             width: "28px",
                             height: "28px",
                             borderRadius: "50%",
-                            background: "#F4A7B9",
+                            background: "var(--moa-primary)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -268,12 +267,16 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                             color: "white",
                             fontWeight: "bold"
                         }}>
-                            {nickname[0]}
+                            {localStorage.getItem("profileImg") ? (
+        <img src={localStorage.getItem("profileImg")} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }} onError={e => { e.target.style.display = "none" }} />
+    ) : (
+        nickname[0]
+    )}
                         </div>
 
                         <span style={{
                             fontSize: "13px",
-                            color: "#333",
+                            color: "var(--moa-text)",
                             fontWeight: "600"
                         }}>
                             {nickname}
@@ -281,7 +284,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
 
                         <span style={{
                             fontSize: "11px",
-                            color: "#aaa"
+                            color: "var(--moa-text-sub)"
                         }}>
                             ▾
                         </span>
@@ -297,7 +300,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                 left: 0,
                 width: "72px",
                 height: "calc(100vh - 64px)",
-                background: "white",
+                background: "var(--moa-bg-card)",
                 borderRight: "1px solid #eee",
                 display: "flex",
                 flexDirection: "column",
@@ -320,8 +323,8 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                             justifyContent: "center",
                             fontSize: "22px",
                             cursor: "pointer",
-                            background: current === item.key ? "#fff0f3" : "transparent",
-                            border: current === item.key ? "1.5px solid #F4A7B9" : "1.5px solid transparent",
+                            background: current === item.key ? "var(--moa-light)" : "transparent",
+                            border: current === item.key ? "1.5px solid var(--moa-primary)" : "1.5px solid transparent",
                             transition: "all 0.2s"
                         }}
                     >
@@ -370,7 +373,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                         }}>
                             {/* summary card */}
                             <section style={{
-                                background: "white",
+                                background: "var(--moa-bg-card)",
                                 borderRadius: "24px",
                                 padding: "20px 24px",
                                 boxShadow: "0 8px 24px rgba(0,0,0,0.04)",
@@ -388,7 +391,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                             margin: "0 0 4px",
                                             fontSize: "16px",
                                             fontWeight: "700",
-                                            color: "#111"
+                                            color: "var(--moa-text)"
                                         }}>
                                             이번 달 요약
                                         </p>
@@ -396,7 +399,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                         <p style={{
                                             margin: 0,
                                             fontSize: "12px",
-                                            color: "#aaa"
+                                            color: "var(--moa-text-sub)"
                                         }}>
                                             수입, 지출, 잔액을 한눈에 확인해요.
                                         </p>
@@ -405,8 +408,8 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                     <div style={{
                                         padding: "6px 12px",
                                         borderRadius: "999px",
-                                        background: "#fff0f3",
-                                        color: "#F4A7B9",
+                                        background: "var(--moa-light)",
+                                        color: "var(--moa-primary)",
                                         fontSize: "11px",
                                         fontWeight: "700"
                                     }}>
@@ -429,7 +432,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                         <p style={{
                                             margin: "0 0 6px",
                                             fontSize: "12px",
-                                            color: "#999",
+                                            color: "var(--moa-text-sub)",
                                             fontWeight: "600"
                                         }}>
                                             수익
@@ -439,7 +442,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                             margin: 0,
                                             fontSize: "18px",
                                             fontWeight: "600",
-                                            color: "#111"
+                                            color: "var(--moa-text)"
                                         }}>
                                             +{totalIncome.toLocaleString()}원
                                         </p>
@@ -454,7 +457,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                         <p style={{
                                             margin: "0 0 6px",
                                             fontSize: "12px",
-                                            color: "#999",
+                                            color: "var(--moa-text-sub)",
                                             fontWeight: "600"
                                         }}>
                                             지출
@@ -464,22 +467,22 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                             margin: 0,
                                             fontSize: "18px",
                                             fontWeight: "600",
-                                            color: "#F4A7B9"
+                                            color: "var(--moa-primary)"
                                         }}>
                                             -{totalExpense.toLocaleString()}원
                                         </p>
                                     </div>
 
                                     <div style={{
-                                        background: "#fff0f3",
+                                        background: "var(--moa-light)",
                                         borderRadius: "16px",
                                         padding: "14px 18px",
-                                        border: "1px solid #ffd9e2"
+                                        border: "1px solid var(--moa-border)"
                                     }}>
                                         <p style={{
                                             margin: "0 0 6px",
                                             fontSize: "12px",
-                                            color: "#F4A7B9",
+                                            color: "var(--moa-primary)",
                                             fontWeight: "700"
                                         }}>
                                             합계
@@ -489,7 +492,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                             margin: 0,
                                             fontSize: "18px",
                                             fontWeight: "600",
-                                            color: "#111"
+                                            color: "var(--moa-text)"
                                         }}>
                                             {balance >= 0 ? "+" : "-"}{Math.abs(balance).toLocaleString()}원
                                         </p>
@@ -511,7 +514,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                         <span style={{
                                             fontSize: "14px",
                                             fontWeight: "700",
-                                            color: balance >= 0 ? "#111" : "#F4A7B9"
+                                            color: balance >= 0 ? "#111" : "var(--moa-primary)"
                                         }}>
                                             {balance >= 0 ? "" : "-"}{Math.abs(balance).toLocaleString()}원
                                         </span>
@@ -522,7 +525,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                             {/* recent history */}
                             {}
                             <section style={{
-                                background: "white",
+                                background: "var(--moa-bg-card)",
                                 borderRadius: "24px",
                                 padding: "20px 24px",
                                 boxShadow: "0 8px 24px rgba(0,0,0,0.04)",
@@ -536,7 +539,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                 <div style={{
                                     fontSize: "14px",
                                     fontWeight: "700",
-                                    color: "#111",
+                                    color: "var(--moa-text)",
                                     marginBottom: "12px"
                                 }}>
                                     최근 소비 및 수입 내역
@@ -554,30 +557,30 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                     }}>
                                         <thead style={{ position: "sticky", top: 0, zIndex: 10 }}>
                                         <tr style={{ background: "#f8fafc" }}>
-                                            <th style={{ padding: "10px 12px", borderRadius: "10px 0 0 10px", textAlign: "left", color: "#475569", fontWeight: "700" }}>Memo</th>
-                                            {!isMobile && <th style={{ padding: "10px 12px", textAlign: "left", color: "#475569", fontWeight: "700" }}>Category</th>}
-                                            {!isMobile && <th style={{ padding: "10px 12px", textAlign: "left", color: "#475569", fontWeight: "700" }}>Date</th>}
-                                            <th style={{ padding: "10px 12px", textAlign: "left", color: "#475569", fontWeight: "700" }}>Amount</th>
-                                            <th style={{ padding: "10px 12px", borderRadius: "0 10px 10px 0", textAlign: "center", color: "#475569", fontWeight: "700", width: "50px" }}>Del</th>
+                                            <th style={{ padding: "10px 12px", borderRadius: "10px 0 0 10px", textAlign: "left", color: "var(--moa-text-sub)", fontWeight: "700" }}>Memo</th>
+                                            {!isMobile && <th style={{ padding: "10px 12px", textAlign: "left", color: "var(--moa-text-sub)", fontWeight: "700" }}>Category</th>}
+                                            {!isMobile && <th style={{ padding: "10px 12px", textAlign: "left", color: "var(--moa-text-sub)", fontWeight: "700" }}>Date</th>}
+                                            <th style={{ padding: "10px 12px", textAlign: "left", color: "var(--moa-text-sub)", fontWeight: "700" }}>Amount</th>
+                                            <th style={{ padding: "10px 12px", borderRadius: "0 10px 10px 0", textAlign: "center", color: "var(--moa-text-sub)", fontWeight: "700", width: "50px" }}>Del</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         {recent.length === 0 ? (
                                             <tr>
-                                                <td colSpan={isMobile ? 3 : 5} style={{ textAlign: "center", padding: "38px 20px", color: "#aaa" }}>
+                                                <td colSpan={isMobile ? 3 : 5} style={{ textAlign: "center", padding: "38px 20px", color: "var(--moa-text-sub)" }}>
                                                     아직 내역이 없어요! 아래 버튼으로 첫 기록을 추가해보세요.
                                                 </td>
                                             </tr>
                                         ) : (
                                             recent.map(item => (
                                                 <tr key={item.id} style={{ borderBottom: "1px solid #f7f7f7" }}>
-                                                    <td style={{ padding: "11px 12px", color: "#111", fontWeight: "600", maxWidth: isMobile ? "100px" : "180px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                                    <td style={{ padding: "11px 12px", color: "var(--moa-text)", fontWeight: "600", maxWidth: isMobile ? "100px" : "180px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                                                         {item.memo || "메모 없음"}
-                                                        {isMobile && <div style={{ fontSize: "10px", color: "#aaa", fontWeight: "400" }}>{item.category} · {item.date}</div>}
+                                                        {isMobile && <div style={{ fontSize: "10px", color: "var(--moa-text-sub)", fontWeight: "400" }}>{item.category} · {item.date}</div>}
                                                     </td>
-                                                    {!isMobile && <td style={{ padding: "11px 12px", color: "#555" }}>{item.category}</td>}
-                                                    {!isMobile && <td style={{ padding: "11px 12px", color: "#777" }}>{item.date}</td>}
-                                                    <td style={{ padding: "11px 12px", fontWeight: "800", color: item.type === "지출" ? "#F4A7B9" : "#7F77DD", whiteSpace: "nowrap" }}>
+                                                    {!isMobile && <td style={{ padding: "11px 12px", color: "var(--moa-text)" }}>{item.category}</td>}
+                                                    {!isMobile && <td style={{ padding: "11px 12px", color: "var(--moa-text-sub)" }}>{item.date}</td>}
+                                                    <td style={{ padding: "11px 12px", fontWeight: "800", color: item.type === "지출" ? "var(--moa-primary)" : "#7F77DD", whiteSpace: "nowrap" }}>
                                                         {item.type === "지출" ? "-" : "+"}{item.amount.toLocaleString()}원
                                                     </td>
                                                     <td style={{ padding: "11px 12px", textAlign: "center" }}>
@@ -607,7 +610,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
 
                             {/* Add Spend CTA button card */}
                             <section style={{
-                                background: "white",
+                                background: "var(--moa-bg-card)",
                                 borderRadius: "24px",
                                 padding: "12px 24px",
                                 boxShadow: "0 8px 24px rgba(0,0,0,0.04)",
@@ -619,9 +622,9 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                     style={{
                                         width: "100%",
                                         padding: "12px",
-                                        background: "#fff0f3",
-                                        color: "#F4A7B9",
-                                        border: "1.5px solid #F4A7B9",
+                                        background: "var(--moa-light)",
+                                        color: "var(--moa-primary)",
+                                        border: "1.5px solid var(--moa-primary)",
                                         borderRadius: "14px",
                                         fontWeight: "700",
                                         fontSize: "13px",
@@ -629,12 +632,12 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                         transition: "all 0.2s"
                                     }}
                                     onMouseOver={(e) => {
-                                        e.currentTarget.style.background = "#F4A7B9"
+                                        e.currentTarget.style.background = "var(--moa-primary)"
                                         e.currentTarget.style.color = "white"
                                     }}
                                     onMouseOut={(e) => {
-                                        e.currentTarget.style.background = "#fff0f3"
-                                        e.currentTarget.style.color = "#F4A7B9"
+                                        e.currentTarget.style.background = "var(--moa-light)"
+                                        e.currentTarget.style.color = "var(--moa-primary)"
                                     }}
                                 >
                                     소비/수입 내역 추가하기
@@ -651,7 +654,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                             <section style={{
                                 width: "100%",
                                 height: isMobile ? "auto" : "100%",
-                                background: "white",
+                                background: "var(--moa-bg-card)",
                                 borderRadius: "24px",
                                 padding: "24px 20px",
                                 boxShadow: "0 8px 24px rgba(0,0,0,0.04)",
@@ -681,7 +684,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                             width: "36px",
                                             height: "36px",
                                             borderRadius: "12px",
-                                            background: "#fff0f3",
+                                            background: "var(--moa-light)",
                                             display: "flex",
                                             alignItems: "center",
                                             justifyContent: "center",
@@ -695,7 +698,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                                 margin: 0,
                                                 fontSize: "14px",
                                                 fontWeight: "800",
-                                                color: "#111"
+                                                color: "var(--moa-text)"
                                             }}>
                                                 MOA의 한마디
                                             </p>
@@ -703,7 +706,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                             <p style={{
                                                 margin: "2px 0 0",
                                                 fontSize: "11px",
-                                                color: "#aaa"
+                                                color: "var(--moa-text-sub)"
                                             }}>
                                                 오늘의 소비 코멘트
                                             </p>
@@ -711,10 +714,10 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                     </div>
 
                                     <div style={{
-                                        background: "#fff0f3",
+                                        background: "var(--moa-light)",
                                         borderRadius: "16px",
                                         padding: "14px 16px",
-                                        border: "1px solid #ffd9e2",
+                                        border: "1px solid var(--moa-border)",
                                         textAlign: "left",
                                         flex: isMobile ? "0 0 auto" : 1,
                                         overflowY: isMobile ? "visible" : "auto"
@@ -722,7 +725,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                         <p style={{
                                             margin: 0,
                                             fontSize: "13px",
-                                            color: "#333",
+                                            color: "var(--moa-text)",
                                             lineHeight: 1.6,
                                             fontWeight: "400"
                                         }}>
@@ -736,8 +739,8 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                         width: "100px",
                                         height: "100px",
                                         borderRadius: "50%",
-                                        background: "#fff0f3",
-                                        border: "3px solid #F4A7B9",
+                                        background: "var(--moa-light)",
+                                        border: "3px solid var(--moa-primary)",
                                         boxShadow: "0 0 16px rgba(244,167,185,0.35)",
                                         display: "flex",
                                         alignItems: "center",
@@ -751,7 +754,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                     <p style={{
                                         margin: "0 0 4px",
                                         fontSize: "16px",
-                                        color: "#111",
+                                        color: "var(--moa-text)",
                                         fontWeight: "800"
                                     }}>
                                         MOA Lv.1
@@ -760,7 +763,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                     <p style={{
                                         margin: "0 0 14px",
                                         fontSize: "11px",
-                                        color: "#aaa",
+                                        color: "var(--moa-text-sub)",
                                         lineHeight: 1.5
                                     }}>
                                         기록을 쌓을수록 MOA가 성장해요.
@@ -777,7 +780,7 @@ function MainPage({ onHome, onHistory, onAnalysis, onWishlist, onChat, onAddSpen
                                             width: "28%",
                                             height: "100%",
                                             borderRadius: "999px",
-                                            background: "#F4A7B9"
+                                            background: "var(--moa-primary)"
                                         }} />
                                     </div>
                                 </div>

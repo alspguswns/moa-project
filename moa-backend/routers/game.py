@@ -449,6 +449,24 @@ def use_item(request: UseItemRequest, db: Session = Depends(get_db)):
     }
 
 # ──────────────────────────────────────────
+# 씨앗 차감 (테마 구매 등)
+# ──────────────────────────────────────────
+class SpendSeedsRequest(BaseModel):
+    user_id: int
+    amount: int
+
+@router.post("/spend-seeds")
+def spend_seeds(request: SpendSeedsRequest, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == request.user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="유저를 찾을 수 없어요!")
+    if (user.seeds or 0) < request.amount:
+        raise HTTPException(status_code=400, detail="씨앗이 부족해요!")
+    user.seeds -= request.amount
+    db.commit()
+    return {"success": True, "remaining_seeds": user.seeds}
+
+# ──────────────────────────────────────────
 # 씨앗 잔액 조회
 # ──────────────────────────────────────────
 @router.get("/seeds/{user_id}")
